@@ -3,9 +3,11 @@ then
     echo "Building in Cygwin..."
 	MKBOOTFS="mkbootfs.exe"
 	MKBOOTIMG="mkbootimg.exe"
+	cp ramdisk_cygwin/init ramdisk/init
 else
     MKBOOTFS="mkbootfs"
 	MKBOOTIMG="mkbootimg"
+	cp ramdisk_linux/init ramdisk/init
 fi
 if [ ! -e ./ramdisk/modules/ ]
 then
