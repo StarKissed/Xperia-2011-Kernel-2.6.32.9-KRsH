@@ -3,34 +3,47 @@ then
     echo "Building in Cygwin..."
 	MKBOOTFS="mkbootfs.exe"
 	MKBOOTIMG="mkbootimg.exe"
-	cp ramdisk_cygwin/init ramdisk/init
 else
     MKBOOTFS="mkbootfs"
 	MKBOOTIMG="mkbootimg"
-	cp ramdisk_linux/init ramdisk/init
 fi
+
+# link init every build (for cygwin/linux compatibility)
+cd ramdisk
+ln -s /sbin/init.sh init
+cd ..
+
 if [ ! -e ./ramdisk/modules/ ]
 then
     mkdir ramdisk/modules/
 fi
+
 cp -f drivers/net/wireless/bcm4329/bcm4329.ko ramdisk/modules/
 echo "[i] bcm4329.ko added to ramdisk"
+
 rm ./ramdisk/sbin/aroma-res.zip
 cd ramdisk___aroma-res
 zip -9 -r -q ../ramdisk/sbin/aroma-res.zip *
-echo "[i] aroma-res.zip built"
 cd ..
+echo "[i] aroma-res.zip built"
+
 ./$MKBOOTFS ./ramdisk-jb > ramdisk/sbin/ramdisk-jb.cpio
 echo "[i] ramdisk-jb.cpio built"
+
 ./$MKBOOTFS ./ramdisk-ics > ramdisk/sbin/ramdisk-ics.cpio
 echo "[i] ramdisk-ics.cpio built"
+
 ./$MKBOOTFS ./ramdisk-recovery > ramdisk/sbin/ramdisk-recovery.cpio
 echo "[i] ramdisk-recovery.cpio built"
+
 ./$MKBOOTFS ./ramdisk-cwm > ramdisk/sbin/ramdisk-cwm.cpio
 echo "[i] ramdisk-cwm.cpio built"
-./$MKBOOTFS ./ramdisk | lzma -4 > ramdisk.cpio.lzma
-echo "[i] ramdisk.cpio.gz built"
+
+./$MKBOOTFS ./ramdisk | lzma -5 > ramdisk.cpio.lzma
+echo "[i] ramdisk.cpio.lzma built"
+
 ./$MKBOOTIMG --base 0x00200000 --kernel ./arch/arm/boot/zImage --ramdisk ramdisk.cpio.lzma -o boot.img
-#./mkbootimg --base 0x00200000 --kernel ./arch/arm/boot/Image --ramdisk ramdisk.cpio.gz -o boot.img
-rm ramdisk.cpio.lzma
 echo "[i] boot.img built"
+
+rm ramdisk.cpio.lzma
+rm ramdisk/init
