@@ -107,7 +107,6 @@ mounter()
         mount -t yaffs2 -o ro,remount                       /dev/block/mtdblock0        /system
         mount -t yaffs2 -o rw,remount,noatime,nosuid,nodev  /dev/block/mtdblock1        /data
     else
-        
         busybox mount /dev/block/mmcblk0p1 /sdcard
         busybox mount -o bind /sdcard/turbo /turbo
         busybox umount -l /sdcard
@@ -162,7 +161,7 @@ mountproc()
 
 checkrecovery()
 {
-    if [ -e /turbo/cwm ]; then 
+    if [ -e /cache/cwm ]; then 
         busybox echo "cwm";
     else
         busybox echo "twrp";

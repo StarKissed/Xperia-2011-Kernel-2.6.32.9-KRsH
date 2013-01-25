@@ -41,6 +41,12 @@ busybox mount -t yaffs2 $BOOTREC_CACHE /cache
 busybox echo 1024000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 busybox echo 122000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 
+# make links
+cd /sbin
+ln -s recoverz reboot
+ln -s recoverz sh
+cd ..
+
 if [ ! -e /cache/recovery/boot ]; then
     # trigger blue LED
     busybox echo 0 > $BOOTREC_LED_RED
@@ -88,7 +94,7 @@ busybox pkill -f "busybox cat ${BOOTREC_EVENT}"
 if [ -e /tmp/bootrec ]
 then
     busybox rm /tmp/bootrec
-    if [ -e /turbo/cwm ]; then
+    if [ -e /cache/cwm ]; then
         # cwm-recovery ramdisk
         rec_image=/sbin/ramdisk-cwm.cpio
 	else
@@ -183,5 +189,5 @@ busybox umount -l /sys
 
 #busybox rm -rf /dev/*
 busybox date >>boot.log
-export PATH="${_PATH}"
+#export PATH="${_PATH}"
 exec /init
