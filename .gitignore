@@ -15,7 +15,6 @@ Module.symvers
 System.map
 modules.order
 arch/arm/boot/Image
-arch/arm/boot/zImage
 arch/arm/boot/compressed/piggy.gz
 arch/arm/kernel/asm-offsets.s
 arch/arm/lib/lib.a
