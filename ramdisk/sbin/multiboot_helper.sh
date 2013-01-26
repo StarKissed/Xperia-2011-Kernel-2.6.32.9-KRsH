@@ -159,15 +159,6 @@ mountproc()
     sync
 }
 
-checkrecovery()
-{
-    if [ -e /cache/cwm ]; then 
-        busybox echo "cwm";
-    else
-        busybox echo "twrp";
-    fi
-}
-
 checkfree()
 {
     FREE=`df | grep $2 | awk '{print $4}'`

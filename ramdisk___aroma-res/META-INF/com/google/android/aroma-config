@@ -96,8 +96,7 @@ if getvar("exec_buffer") == "4\n" then
     setvar("slot4default", "[Default]"); 
 endif;
 
-exec("/sbin/multiboot_helper.sh", "checkrecovery");
-if getvar("exec_buffer") == "cwm\n"
+if file_getprop("/cache/turbo.recovery","recovery") == "cwm";
 then
     setvar("rec", "CWM");
     setvar("recicon", "@cwm");
@@ -304,11 +303,11 @@ if prop("systemselect.prop","selected")=="5" then
     );
     
     if prop("rec.prop","selected")=="1" then
-        exec("busybox", "rm", "-f", "/cache/cwm");
+        write("/cache/turbo.recovery", "recovery=twrp\n");
     endif;
     
     if prop("rec.prop","selected")=="2" then
-        write("/cache/cwm", "1\n");
+        write("/cache/turbo.recovery", "recovery=cwm\n");
     endif;
     
     exec("busybox", "mkdir", "/cache/recovery");
