@@ -70,13 +70,27 @@ busybox echo 200 > $BOOTREC_LED_BLUE
 # default ramdisk
 load_image=/sbin/ramdisk-recovery.cpio
 
-# bind-mount turbo data then unmount sdcard
+# mount sdcard to load settings and such
 busybox mkdir /sdcard
 busybox mount /dev/block/mmcblk0p1 /sdcard
+
+# freshboot check
+if [ ! -d /sdcard/turbo]; then
+    busybox rm -rf /sdcard/turbo  # incase a non-directory of same name exists
+    busybox mkdir /sdcard/turbo
+fi
+
+# bind-mount turbo data then unmount sdcard
 busybox mkdir /turbo
 busybox mount -o bind /sdcard/turbo /turbo
 busybox umount -l /sdcard
 busybox rm -rf /sdcard
+
+# fresh turbo check
+if [ ! -e /turbo/version ]; then
+    # Boot Menu has never run, force it
+    busybox touch /cache/recovery/boot
+fi
 
 # boot decision
 if [ -s /dev/keycheck -o -e /cache/recovery/boot ]
