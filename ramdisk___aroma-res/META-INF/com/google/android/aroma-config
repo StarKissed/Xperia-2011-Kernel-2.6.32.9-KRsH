@@ -470,7 +470,7 @@ endif;
             "The repair process has completed. Be sure to check the log for details."
         );
         exec("/sbin/busybox", "sync");
-        back("999");
+        exit("");
     endif;
     
     ##########
