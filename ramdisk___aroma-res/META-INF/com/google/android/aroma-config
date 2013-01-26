@@ -304,11 +304,11 @@ if prop("systemselect.prop","selected")=="5" then
     );
     
     if prop("rec.prop","selected")=="1" then
-        exec("busybox", "rm", "-f", "/turbo/cwm");
+        exec("busybox", "rm", "-f", "/cache/cwm");
     endif;
     
     if prop("rec.prop","selected")=="2" then
-        write("/turbo/cwm", "1\n");
+        write("/cache/cwm", "1\n");
     endif;
     
     exec("busybox", "mkdir", "/cache/recovery");

@@ -1,4 +1,4 @@
-#!/sbin/busybox sh
+#!/sbin/sh
 
 # start aroma bootmenu
 source /sbin/bootrec-device
@@ -16,8 +16,8 @@ if [ -e /tmp/turbo_repair.ready2copy ]; then
 fi
 busybox sync
 if [ -e /tmp/bootrec ]; then
-    source /tmp/recslot
-    busybox cp -f $FSTAB /etc/recovery.fstab
+    source /tmp/recslot >> /tmp.log
+    busybox cp -f $FSTAB /etc/recovery.fstab >> /tmp.log
     /sbin/recovery
 fi
 busybox umount -l /dev/block/mmcblk0p1

@@ -14,14 +14,10 @@ on init
     mkdir /boot
     mkdir /sdcard
     mkdir /sd-ext
-    #mkdir /datadata
-    #mkdir /emmc
     mkdir /system
     mkdir /data
     mkdir /cache
     mount /tmp /tmp tmpfs
-
-    symlink /sbin/busybox /system/bin/sh
     
     chown root shell /tmp
     chmod 0775 /tmp

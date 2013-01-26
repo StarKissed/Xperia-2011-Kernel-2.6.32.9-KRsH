@@ -42,10 +42,8 @@ busybox echo 1024000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 busybox echo 122000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 
 # make links
-cd /sbin
-ln -s recoverz reboot
-ln -s recoverz sh
-cd ..
+busybox ln -s /sbin/recoverz /sbin/reboot
+busybox ln -s /sbin/recoverz /sbin/sh
 
 if [ ! -e /cache/recovery/boot ]; then
     # trigger blue LED
@@ -173,6 +171,16 @@ fi
 
 # unpack the ramdisk
 busybox cpio -d -i -F ${load_image}
+
+#cwm
+if [ ! -e /sbin/recovery ]; then
+    busybox cp /sbin/recoverz /sbin/recovery
+fi
+
+# make links
+cd /sbin
+./init_links.sh
+cd ..
 
 # switch LED off
 busybox echo 0 > $BOOTREC_LED_RED
