@@ -190,12 +190,13 @@ busybox echo 0 > $BOOTREC_LED_BLUE
 #busybox cp /boot.log /cache/boot_last.log
 
 busybox umount -l /cache
-#busybox rm -rf /cache
 busybox umount -l /proc
 busybox umount -l /sys
-#busybox umount -l /tmp
+busybox umount -l /tmp
+busybox umount -l /turbo
 
-#busybox rm -rf /dev/*
+busybox rm -rf /cache
+busybox rm -rf /dev/*
 busybox date >>boot.log
-#export PATH="${_PATH}"
+export PATH="${_PATH}"
 exec /init
