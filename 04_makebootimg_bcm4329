@@ -39,7 +39,7 @@ echo "[i] ramdisk-recovery.cpio built"
 ./$MKBOOTFS ./ramdisk-cwm > ramdisk/sbin/ramdisk-cwm.cpio
 echo "[i] ramdisk-cwm.cpio built"
 
-./$MKBOOTFS ./ramdisk | lzma -5 -C crc32 > ramdisk.cpio.lzma
+./$MKBOOTFS ./ramdisk | lzma -6 -C crc32 > ramdisk.cpio.lzma
 echo "[i] ramdisk.cpio.lzma built"
 
 ./$MKBOOTIMG --base 0x00200000 --kernel ./arch/arm/boot/zImage --ramdisk ramdisk.cpio.lzma -o boot.img

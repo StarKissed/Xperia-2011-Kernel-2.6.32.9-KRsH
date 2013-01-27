@@ -1,4 +1,4 @@
-#!/sbin/busybox sh
+#!/sbin/sh
 
 #set -x
 #exec >>/multiboot.log 2>&1
@@ -7,59 +7,59 @@ checkfresh()
 {
     if [ ! -e /turbo/version ]; then
         # delete old settings
-        busybox rm -rf /turbo/*
-        busybox uname -r > /turbo/version;
-        busybox echo "icon=@slot1" > /turbo/slot1.prop
-        busybox echo "text=Slot 1" >> /turbo/slot1.prop
-        busybox echo "mode=JB-AOSP" > /turbo/slot1mode.prop
-        busybox echo "icon=@slot2" > /turbo/slot2.prop
-        busybox echo "text=Slot 2" >> /turbo/slot2.prop
-        busybox echo "mode=JB-AOSP" > /turbo/slot2mode.prop
-        busybox echo "icon=@slot3" > /turbo/slot3.prop
-        busybox echo "text=Slot 3" >> /turbo/slot3.prop
-        busybox echo "mode=JB-AOSP" > /turbo/slot3mode.prop
-        busybox echo "icon=@slot4" > /turbo/slot4.prop
-        busybox echo "text=Slot 4" >> /turbo/slot4.prop
-        busybox echo "mode=JB-AOSP" > /turbo/slot4mode.prop
-        busybox echo "1";
+        rm -rf /turbo/*
+        uname -r > /turbo/version;
+        echo "icon=@slot1" > /turbo/slot1.prop
+        echo "text=Slot 1" >> /turbo/slot1.prop
+        echo "mode=JB-AOSP" > /turbo/slot1mode.prop
+        echo "icon=@slot2" > /turbo/slot2.prop
+        echo "text=Slot 2" >> /turbo/slot2.prop
+        echo "mode=JB-AOSP" > /turbo/slot2mode.prop
+        echo "icon=@slot3" > /turbo/slot3.prop
+        echo "text=Slot 3" >> /turbo/slot3.prop
+        echo "mode=JB-AOSP" > /turbo/slot3mode.prop
+        echo "icon=@slot4" > /turbo/slot4.prop
+        echo "text=Slot 4" >> /turbo/slot4.prop
+        echo "mode=JB-AOSP" > /turbo/slot4mode.prop
+        echo "1";
     else
-        busybox echo "0";
+        echo "0";
     fi     
 }
 
 clearslot()
 {
-    busybox echo "icon=@slot$2" > /turbo/slot$2.prop
-    busybox echo "text=Slot $2" >> /turbo/slot$2.prop
-    busybox echo "custom=true" >> /turbo/slot$2.prop
-    busybox echo "mode=JB-AOSP" >> /turbo/slot$2.prop
+    echo "icon=@slot$2" > /turbo/slot$2.prop
+    echo "text=Slot $2" >> /turbo/slot$2.prop
+    echo "custom=true" >> /turbo/slot$2.prop
+    echo "mode=JB-AOSP" >> /turbo/slot$2.prop
 }
 
 checkslot()
 {
     if [ ! -e /turbo/system$2.ext2.img ] && [ ! -e /turbo/userdata$2.ext2.img ]; then 
-        busybox echo "1";
+        echo "1";
     else
-        busybox echo "0";
+        echo "0";
     fi
 }
 
 checkdefault()
 {
     if   [ -e /turbo/defaultboot_2 ]; then
-        busybox rm /turbo/defaultboot_1 >> /dev/null 2>&1
-        busybox rm /turbo/defaultboot_3 >> /dev/null 2>&1
-        busybox rm /turbo/defaultboot_4 >> /dev/null 2>&1
-        busybox echo "2";
+        rm /turbo/defaultboot_1 >> /dev/null 2>&1
+        rm /turbo/defaultboot_3 >> /dev/null 2>&1
+        rm /turbo/defaultboot_4 >> /dev/null 2>&1
+        echo "2";
     elif [ -e /turbo/defaultboot_3 ]; then
-        busybox rm /turbo/defaultboot_1 >> /dev/null 2>&1
-        busybox rm /turbo/defaultboot_4 >> /dev/null 2>&1
-        busybox echo "3";
+        rm /turbo/defaultboot_1 >> /dev/null 2>&1
+        rm /turbo/defaultboot_4 >> /dev/null 2>&1
+        echo "3";
     elif [ -e /turbo/defaultboot_4 ]; then
-        busybox rm /turbo/defaultboot_1 >> /dev/null 2>&1
-        busybox echo "4";
+        rm /turbo/defaultboot_1 >> /dev/null 2>&1
+        echo "4";
     else
-        busybox echo "1";
+        echo "1";
     fi
 }
 
@@ -69,35 +69,35 @@ makeimage()
 {
     if   [ "$3" == "system" ]; then
         IMGSIZE=$4
-        busybox rm /turbo/system$2.ext2.img
-        busybox dd if=/dev/zero of=/turbo/system$2.ext2.img bs=1K count=$IMGSIZE
-        busybox mke2fs -b 1024 -I 128 -m 0 -F -E resize=$(( IMGSIZE * 2 )) /turbo/system$2.ext2.img
-        busybox tune2fs -C 1 -m 0 -f /turbo/system$2.ext2.img
+        rm /turbo/system$2.ext2.img
+        dd if=/dev/zero of=/turbo/system$2.ext2.img bs=1K count=$IMGSIZE
+        mke2fs -b 1024 -I 128 -m 0 -F -E resize=$(( IMGSIZE * 2 )) /turbo/system$2.ext2.img
+        tune2fs -C 1 -m 0 -f /turbo/system$2.ext2.img
     elif [ "$3" == "userdata" ]; then
         IMGSIZE=$4
-        busybox rm /turbo/userdata$2.ext2.img
-        busybox dd if=/dev/zero of=/turbo/userdata$2.ext2.img bs=1K count=$IMGSIZE
-        busybox mke2fs -b 1024 -I 128 -m 0 -F -E resize=$(( IMGSIZE * 2 )) /turbo/userdata$2.ext2.img
-        busybox tune2fs -C 1 -m 0 -f /turbo/userdata$2.ext2.img
+        rm /turbo/userdata$2.ext2.img
+        dd if=/dev/zero of=/turbo/userdata$2.ext2.img bs=1K count=$IMGSIZE
+        mke2fs -b 1024 -I 128 -m 0 -F -E resize=$(( IMGSIZE * 2 )) /turbo/userdata$2.ext2.img
+        tune2fs -C 1 -m 0 -f /turbo/userdata$2.ext2.img
     fi
 }
 
 copyimage()
 {
-    busybox mkdir /dest
+    mkdir /dest
     if   [ "$3" == "system" ]; then
-        busybox mount -t yaffs2 -o ro /dev/block/mtdblock0 /system
-        busybox mount -t ext2 -o rw,loop /turbo/system$2.ext2.img /dest
-        busybox cp -a /system/* /dest
-        busybox umount /system
+        mount -t yaffs2 -o ro /dev/block/mtdblock0 /system
+        mount -t ext2 -o rw,loop /turbo/system$2.ext2.img /dest
+        cp -a /system/* /dest
+        umount /system
     elif [ "$3" == "userdata" ]; then
-        busybox mount -t yaffs2 -o ro /dev/block/mtdblock1 /data
-        busybox mount -t ext2 -o rw,loop /turbo/userdata$2.ext2.img /dest
-        busybox cp -a /data/* /dest
-        busybox umount /data
+        mount -t yaffs2 -o ro /dev/block/mtdblock1 /data
+        mount -t ext2 -o rw,loop /turbo/userdata$2.ext2.img /dest
+        cp -a /data/* /dest
+        umount /data
     fi
-    busybox umount /dest
-    busybox rm -f -R /dest
+    umount /dest
+    rm -f -R /dest
 }
 
 mounter()
@@ -107,22 +107,90 @@ mounter()
         mount -t yaffs2 -o ro,remount                       /dev/block/mtdblock0        /system
         mount -t yaffs2 -o rw,remount,noatime,nosuid,nodev  /dev/block/mtdblock1        /data
     else
-        busybox mount /dev/block/mmcblk0p1 /sdcard
-        busybox mount -o bind /sdcard/turbo /turbo
-        busybox umount -l /sdcard
-        busybox rm -rf /sdcard
-        busybox losetup /dev/block/loop0 /turbo/system$1.ext2.img
-        busybox losetup /dev/block/loop1 /turbo/userdata$1.ext2.img
+        mount /dev/block/mmcblk0p1 /sdcard
+        mount -o bind /sdcard/turbo /turbo
+        umount -l /sdcard
+        rm -rf /sdcard
+        losetup /dev/block/loop0 /turbo/system$1.ext2.img
+        losetup /dev/block/loop1 /turbo/userdata$1.ext2.img
         umount /system
         umount /data
         mount -t ext2   -o rw                        /dev/block/loop0    /system
         mount -t ext2   -o ro,remount                /dev/block/loop0    /system
         mount -t ext2   -o rw,noatime,nosuid,nodev   /dev/block/loop1    /data
     fi
+    
+    busybox echo 0 > $BOOTREC_LED_RED
+    busybox echo 0 > $BOOTREC_LED_GREEN
+    busybox echo 0 > $BOOTREC_LED_BLUE
+    
+    # TSDX
+    if [ -e /data/tsdx/enabled ] && [ -d /data/data ]; then
+        # only proceed if data has been populated (i.e. ROM has booted at least once)
+        # this is to ensure permissions are not broken
+        mount -o rw,remount -t rootfs rootfs /
+        if [ ! -d /sd-ext ]; then
+            rm -r -f /sd-ext
+            mkdir -p /sd-ext
+            chmod -R 775 /sd-ext
+            chown -R 0:0 /sd-ext
+        fi
+        chmod 775 /sd-ext
+        chown 0:0 /sd-ext
+        mount -o ro,remount -t rootfs rootfs /
+        umount /sd-ext
+        umount /dev/block/mmcblk0p2
+        umount /dev/block/vold/179:2
+        mount -t ext4 -o noauto_da_alloc,data=ordered,commit=15,barrier=1,nouser_xattr,errors=continue,noatime,nodiratime,nosuid,nodev /dev/block/mmcblk0p2 /sd-ext
+        if [ ! -d /sd-ext/data2 ]; then
+            # Create data2sd folder for Titanium Backup if needed (to share app data between slots)
+            mkdir -p /sd-ext/data2
+        fi
+        for f in app app_s app-private framework_s lib_s; do
+            if [ ! -h /data/$f ]; then
+                busybox echo 200 > $BOOTREC_LED_RED
+                busybox echo 200 > $BOOTREC_LED_GREEN
+                busybox echo 200 > $BOOTREC_LED_BLUE
+                # /data/$f not linked yet
+                if [ -d /data/$f ]; then
+                    # folder exists, move it
+                    mv /data/$f /sd-ext/$f
+                fi
+                busybox echo 0 > $BOOTREC_LED_RED
+                busybox echo 0 > $BOOTREC_LED_GREEN
+                busybox echo 0 > $BOOTREC_LED_BLUE
+                if [ ! -d /sd-ext/$f ]; then
+                    # folder not exists yet (empty on internal), create it
+                    mkdir -p /sd-ext/$f
+                fi
+                # link it
+                ln -s /sd-ext/$f /data/$f
+            fi
+        done
+        if [ ! -h /data/system ]; then
+            # /data/system not linked yet
+            if [ -d /data/system ]; then
+                # folder exists, move it
+                busybox echo 200 > $BOOTREC_LED_RED
+                busybox echo 200 > $BOOTREC_LED_GREEN
+                busybox echo 200 > $BOOTREC_LED_BLUE
+                mv /data/system /sd-ext/system_slot$1
+                busybox echo 0 > $BOOTREC_LED_RED
+                busybox echo 0 > $BOOTREC_LED_GREEN
+                busybox echo 0 > $BOOTREC_LED_BLUE
+            fi
+            # link it
+            ln -s /sd-ext/system_slot$1 /data/system
+        fi
+    fi
 }
 
 mountproc()
 {
+    source /sbin/bootrec-device
+    busybox echo 200 > $BOOTREC_LED_RED
+    busybox echo 200 > $BOOTREC_LED_GREEN
+    busybox echo 200 > $BOOTREC_LED_BLUE
     echo "Mountproc started..."
     if   [ -e /cache/multiboot1 ]; then
         rm /cache/multiboot1
@@ -157,6 +225,10 @@ mountproc()
     mount -o bind /data/dalvik-cache /cache/dalvik-cache
     
     sync
+    
+    busybox echo 0 > $BOOTREC_LED_RED
+    busybox echo 0 > $BOOTREC_LED_GREEN
+    busybox echo 0 > $BOOTREC_LED_BLUE
 }
 
 checkfree()
@@ -164,12 +236,34 @@ checkfree()
     FREE=`df | grep $2 | awk '{print $4}'`
     SPACE=`expr $FREE - 10240`
     INPUT=`expr $3 + $4`
-    busybox echo "tmp=`expr $SPACE - $INPUT`" > /tmp/aroma/tmp.prop
+    echo "tmp=`expr $SPACE - $INPUT`" > /tmp/aroma/tmp.prop
 }
 
 checkcapacity()
 {
-    busybox echo "tmp=`cat /proc/partitions | grep $2 | awk '{print $3}'`" > /tmp/aroma/tmp.prop
+    echo "tmp=`cat /proc/partitions | grep $2 | awk '{print $3}'`" > /tmp/aroma/tmp.prop
+}
+
+checktsdx()
+{
+    sync
+    umount /data
+    if  [ "$2" == "1" ]; then
+        mount -t yaffs2 -o rw,noatime,nosuid,nodev  /dev/block/mtdblock1        /data
+    else
+        losetup /dev/block/loop1 /turbo/userdata$1.ext2.img
+        mount -t ext2   -o rw,noatime,nosuid,nodev   /dev/block/loop1    /data
+    fi
+    
+    sync
+    
+    if [ -e /data/tsdx/enabled ]; then
+        echo "task=Remove" > /tmp/tsdxstatus.prop
+    else
+        echo "task=Install" > /tmp/tsdxstatus.prop
+    fi
+    
+    sync
 }
 
 $1 $1 $2 $3 $4

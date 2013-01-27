@@ -182,7 +182,7 @@ if prop("systemselect.prop","selected")=="3" then
 endif;
 
 if prop("systemselect.prop","selected")=="4" then
-    setvar("currentslot", "4");    
+    setvar("currentslot", "4");
     exec("/sbin/multiboot_helper.sh", "checkslot", "4");
     if getvar("exec_buffer") == "0\n"
     then
@@ -210,7 +210,7 @@ endif;
 # Boot
 if prop("systemtask.prop","selected")=="1" then
     write("/cache/multiboot" + getvar("currentslot"),"1");
-    exec("/sbin/busybox", "sync");
+    exec("sync");
     ini_set("force_colorspace", "argb");
     exit("");
 endif;
@@ -220,7 +220,7 @@ endif;
 if prop("systemtask.prop","selected")=="2" then
         write("/tmp/bootrec","1");
         write("/tmp/recslot", "FSTAB=/recovery" + getvar("currentslot") + ".fstab");
-        exec("/sbin/busybox", "sync");
+        exec("sync");
         exit("");
 endif;
 
@@ -229,15 +229,15 @@ endif;
 if prop("systemtask.prop","selected")=="3" then
     pleasewait("Copying Wifi module to Slot " + getvar("currentslot") + " ...");
     if getvar("currentslot")=="1" then
-        exec("/sbin/busybox","mount","-t","yaffs2","/dev/block/mtdblock0","/system");
+        exec("mount","-t","yaffs2","/dev/block/mtdblock0","/system");
     else
-        exec("/sbin/busybox","mount", "-w", "-t", "ext2", "/turbo/system" + getvar("currentslot") + ".ext2.img", "/system");
+        exec("mount", "-w", "-t", "ext2", "/turbo/system" + getvar("currentslot") + ".ext2.img", "/system");
     endif;
-    exec("/sbin/busybox","mkdir", "-p", "/system/lib/modules");
-    exec("/sbin/busybox","cp", "-f", "/modules/bcm4329.ko", "/system/lib/modules/bcm4329.ko");
-    exec("/sbin/busybox","chmod","664", "/system/lib/modules/bcm4329.ko");
-    exec("/sbin/busybox","umount", "/system");
-    exec("/sbin/busybox","sync");
+    exec("mkdir", "-p", "/system/lib/modules");
+    exec("cp", "-f", "/modules/bcm4329.ko", "/system/lib/modules/bcm4329.ko");
+    exec("chmod","664", "/system/lib/modules/bcm4329.ko");
+    exec("sync");
+    exec("umount", "/system");
     alert("Fix Wifi","The Wifi module has been forcibly installed to Slot " + getvar("currentslot") + ".\n\nPress OK to return to the main menu.", "@cog");
     back("999");
 endif;
@@ -268,8 +268,39 @@ endif;
 ##########
 # Tweaks
 if prop("systemtask.prop","selected")=="5" then
-    alert("Not Implemented","This option doesn't do anything yet.\n\nIf you have any suggestions or ideas, please let me know!", "@customize");
-    back("1");
+    exec("/sbin/multiboot_helper.sh", "checktsdx", getvar("currentslot"));
+    
+    menubox("Tweaks and Mods",
+            "Please select the task you wish to perform.",
+            "@customize",
+            "tweaksmods.prop",
+            file_getprop("/tmp/tsdxstatus.prop","task") + " TSDX",  "TSDX - Native, robust sd-ext solution (select for more info)", "@about"
+    );
+    
+    if prop("tweaksmods.prop","selected")=="1" then
+        if file_getprop("/tmp/tsdxstatus.prop","task") == "Install" then
+            textbox(
+                "TSDX Installation",
+                "Turbo SD-eXt is a robust and reliable set-and-forget sd-ext solution.",
+                "@about",
+                resread("tsdx_install.txt")
+            );
+    
+            exec("mkdir", "-p", "/data/tsdx");
+            write("/data/tsdx/enabled", "enabled\n");
+            
+            viewbox(
+                "TSDX Installation",
+                "Turbo SD-eXt has been enabled.\n\n" +
+                "The mentioned data will be moved on the next boot of this slot.\n"+
+                "If there is no data existing on this slot (i.e. you have not booted it yet), you will need to reboot the slot again to apply.",
+            "@about"
+            );
+        endif;
+    endif;
+    exec("sync");
+    exec("umount", "/data");
+    back("999");
 endif;
 
 
@@ -310,10 +341,10 @@ if prop("systemselect.prop","selected")=="5" then
         write("/cache/turbo.recovery", "recovery=cwm\n");
     endif;
     
-    exec("busybox", "mkdir", "/cache/recovery");
+    exec("mkdir", "/cache/recovery");
     write("/cache/recovery/boot", "1\n");
     
-    exec("busybox", "sync");
+    exec("sync");
     exit("");
 endif;
 
@@ -354,9 +385,9 @@ endif;
             setvar("slot3default", "");
             setvar("slot4default", "");
             write("/turbo/defaultboot_1","1");
-            exec("/sbin/busybox", "rm", "-f", "/turbo/defaultboot_2");
-            exec("/sbin/busybox", "rm", "-f", "/turbo/defaultboot_3");
-            exec("/sbin/busybox", "rm", "-f", "/turbo/defaultboot_4");
+            exec("rm", "-f", "/turbo/defaultboot_2");
+            exec("rm", "-f", "/turbo/defaultboot_3");
+            exec("rm", "-f", "/turbo/defaultboot_4");
         endif;
         
         if prop("newdefault.prop","selected")=="2" then
@@ -365,9 +396,9 @@ endif;
             setvar("slot3default", "");
             setvar("slot4default", "");
             write("/turbo/defaultboot_2","1");
-            exec("/sbin/busybox", "rm", "-f", "/turbo/defaultboot_1");
-            exec("/sbin/busybox", "rm", "-f", "/turbo/defaultboot_3");
-            exec("/sbin/busybox", "rm", "-f", "/turbo/defaultboot_4");
+            exec("rm", "-f", "/turbo/defaultboot_1");
+            exec("rm", "-f", "/turbo/defaultboot_3");
+            exec("rm", "-f", "/turbo/defaultboot_4");
         endif;
         
         if prop("newdefault.prop","selected")=="3" then
@@ -376,9 +407,9 @@ endif;
             setvar("slot3default", "[Default]");
             setvar("slot4default", "");
             write("/turbo/defaultboot_3","1");
-            exec("/sbin/busybox", "rm", "-f", "/turbo/defaultboot_1");
-            exec("/sbin/busybox", "rm", "-f", "/turbo/defaultboot_2");
-            exec("/sbin/busybox", "rm", "-f", "/turbo/defaultboot_4");
+            exec("rm", "-f", "/turbo/defaultboot_1");
+            exec("rm", "-f", "/turbo/defaultboot_2");
+            exec("rm", "-f", "/turbo/defaultboot_4");
         endif;
         
         if prop("newdefault.prop","selected")=="4" then
@@ -387,9 +418,9 @@ endif;
             setvar("slot3default", "");
             setvar("slot4default", "[Default]");
             write("/turbo/defaultboot_4","1");
-            exec("/sbin/busybox", "rm", "-f", "/turbo/defaultboot_1");
-            exec("/sbin/busybox", "rm", "-f", "/turbo/defaultboot_2");
-            exec("/sbin/busybox", "rm", "-f", "/turbo/defaultboot_3");
+            exec("rm", "-f", "/turbo/defaultboot_1");
+            exec("rm", "-f", "/turbo/defaultboot_2");
+            exec("rm", "-f", "/turbo/defaultboot_3");
         endif;
         
         back("999");
@@ -469,7 +500,7 @@ endif;
             "@repair",
             "The repair process has completed. Be sure to check the log for details."
         );
-        exec("/sbin/busybox", "sync");
+        exec("sync");
         exit("");
     endif;
     
@@ -573,8 +604,8 @@ endif;
             );
         endif;
         
-        exec("/sbin/busybox", "rm", "-f", "/turbo/system" + prop("slotdelete.prop","selected") + ".ext2.img");
-        exec("/sbin/busybox", "rm", "-f", "/turbo/userdata" + prop("slotdelete.prop","selected") + ".ext2.img");
+        exec("rm", "-f", "/turbo/system" + prop("slotdelete.prop","selected") + ".ext2.img");
+        exec("rm", "-f", "/turbo/userdata" + prop("slotdelete.prop","selected") + ".ext2.img");
         exec("/sbin/multiboot_helper.sh", "clearslot", prop("slotdelete.prop","selected"));
         
         setvar("slot1icon",    file_getprop("/turbo/slot1.prop","icon"));
@@ -589,7 +620,7 @@ endif;
         setvar("slot4icon",    file_getprop("/turbo/slot4.prop","icon"));
         setvar("slot4text",    file_getprop("/turbo/slot4.prop","text"));
         
-        exec("/sbin/busybox", "sync");
+        exec("sync");
         
         ini_set("text_next", "Next >");
         
@@ -687,7 +718,7 @@ then
         alert("WARNING","You have selected the userdata size of 2800MB. This will take an EXTREMELY long time to complete. It is recommended to plug your charger in NOW.", "@warning");
     endif;
 
-    exec("/sbin/busybox", "sh", "/sbin/multiboot_helper.sh", "checkfree", "/sdcard", prop("systemsize.prop","size"), prop("userdatasize.prop","size"));
+    exec("sh", "/sbin/multiboot_helper.sh", "checkfree", "/sdcard", prop("systemsize.prop","size"), prop("userdatasize.prop","size"));
     writetmpfile("sdcardfree.prop", "free=" + prop("tmp.prop","tmp") + "\n");
     
     if cmp(prop("sdcardfree.prop", "free"), "<", "0") then
@@ -739,7 +770,7 @@ then
     writetmpfile("repairdo.prop", "do=no\n");
     
     ini_set("text_next", "Reboot");
-    exec("/sbin/busybox", "sync");
+    exec("sync");
     install(
         "Creating Slot " + getvar("currentslot"),
         "<b>Turbo Kernel</b> is now performing the slot creation.",
@@ -749,7 +780,7 @@ then
         "REMEMBER: *Never* unmount the SDCard when in this Slot or you may corrupt the images and your SDCard."
     );
     pleasewait("Synchronizing... WAIT!");
-    exec("/sbin/busybox", "sync");
+    exec("sync");
     exit("");
 endif;
 
