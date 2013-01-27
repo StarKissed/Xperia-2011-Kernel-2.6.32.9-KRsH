@@ -183,6 +183,10 @@ else
     fi
 fi
 
+busybox echo 0 > $BOOTREC_LED_RED
+busybox echo 0 > $BOOTREC_LED_GREEN
+busybox echo 0 > $BOOTREC_LED_BLUE
+
 # unpack the ramdisk
 busybox cpio -d -i -F ${load_image}
 
@@ -196,10 +200,9 @@ cd /sbin
 ./init_links.sh
 cd ..
 
-# switch LED off
-busybox echo 0 > $BOOTREC_LED_RED
-busybox echo 0 > $BOOTREC_LED_GREEN
-busybox echo 0 > $BOOTREC_LED_BLUE
+busybox echo 200 > $BOOTREC_LED_RED
+busybox echo 200 > $BOOTREC_LED_GREEN
+busybox echo 200 > $BOOTREC_LED_BLUE
 
 #busybox cp /boot.log /cache/boot_last.log
 
@@ -213,4 +216,9 @@ busybox rm -rf /cache
 busybox rm -rf /dev/*
 busybox date >>boot.log
 export PATH="${_PATH}"
+
+busybox echo 0 > $BOOTREC_LED_RED
+busybox echo 0 > $BOOTREC_LED_GREEN
+busybox echo 0 > $BOOTREC_LED_BLUE
+
 exec /init
