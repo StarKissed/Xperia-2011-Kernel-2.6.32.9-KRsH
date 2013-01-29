@@ -156,7 +156,7 @@ mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandlin
         umount -l /sd-ext
         umount -l /dev/block/mmcblk0p2
         umount -l /dev/block/vold/179:2
-        mount -t ext4 -o noauto_da_alloc,data=ordered,commit=15,barrier=1,nouser_xattr,errors=continue,noatime,nodiratime,nosuid,nodev /dev/block/mmcblk0p2 /sd-extecho >>/boot.log
+        mount -t ext4 -o noauto_da_alloc,data=ordered,commit=15,barrier=1,nouser_xattr,errors=continue,noatime,nodiratime,nosuid,nodev /dev/block/mmcblk0p2 /sd-ext >>/boot.log
         if [ ! -d /sd-ext/data2 ]; then
             # Create data2sd folder for Titanium Backup if needed (to share app data between slots)
             mkdir -p /sd-ext/data2
