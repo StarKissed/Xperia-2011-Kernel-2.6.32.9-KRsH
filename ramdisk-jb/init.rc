@@ -532,3 +532,4 @@ service suntrolkac /system/bin/suntrolkac
 on property:sys.boot_completed=1
 #    exec /sbin/app2sd.sh
     exec /sbin/turbo_helper.sh enableurandom
+    exec /sbin/deasec.sh

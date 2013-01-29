@@ -1,6 +1,7 @@
 <@fill>TSDX will integrate the sd-ext partition on your SDCard with the ROM in this Slot. The following will be linked to the sd-ext partition:</@>
 
 <*>/data/app (Application APK's)</*>
+<*>/data/app-asec (encrypted apps)</*>
 <*>/data/app_s (Sense APK's)</*>
 <*>/data/app-private (Private app/data)</*>
 <*>/data/framework_s (Sense framework)</*>

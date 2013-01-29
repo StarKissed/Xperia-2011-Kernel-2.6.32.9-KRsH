@@ -160,7 +160,7 @@ mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandlin
             mkdir -p /sd-ext/data2
             echo "[TSDX] Created /sd-ext/data2 for sharing app data (via Titanium Backup)" >>/boot.log
         fi
-        for f in app app_s app-private framework_s lib_s; do
+        for f in app app-asec app_s app-private framework_s lib_s; do
             if [ ! -h /data/$f ]; then
                 busybox echo 200 > $BOOTREC_LED_RED
                 busybox echo 200 > $BOOTREC_LED_GREEN
@@ -282,11 +282,15 @@ checkcapacity()
 checktsdx()
 {
     sync
+    umount /system
     umount /data
     if  [ "$2" == "1" ]; then
+        mount -t yaffs2 -o rw                       /dev/block/mtdblock0        /system
         mount -t yaffs2 -o rw,noatime,nosuid,nodev  /dev/block/mtdblock1        /data
     else
+        losetup /dev/block/loop0 /turbo/system$1.ext2.img
         losetup /dev/block/loop1 /turbo/userdata$2.ext2.img
+        mount -t ext2   -o rw,noatime,nosuid,nodev   /dev/block/loop0    /system
         mount -t ext2   -o rw,noatime,nosuid,nodev   /dev/block/loop1    /data
     fi
     
@@ -321,15 +325,15 @@ settsdx()
             chown -R 0:0 /sd-ext
         fi
         mount /dev/block/mmcblk0p2 /sd-ext
-        for f in app app_s app-private framework_s lib_s system; do
+        for f in app app-asec app_s app-private framework_s lib_s system; do
             if [ -h /data/$f ]; then
                 # only delete and copy if symbolic link (i.e. TSDX is active)
                 rm -f /data/$f
                 if [ "$f" == "system" ]; then
                     # special case (always move/delete from sd-ext)
                     mv -f /sd-ext/system_slot$3 /data/system
-                elif [ "$f" != "app" ]; then
-                    # only copy if not /data/app
+                elif [ "$f" != "app" ] && [ "$f" != "app-asec" ] ; then
+                    # only copy if not /data/app or app-asec
                     cp -a /sd-ext/$f /data/$f
                 fi
             fi
@@ -338,6 +342,7 @@ settsdx()
 
     if [ "$2" == "clean" ]; then
         rm -rf /sd-ext/app
+        rm -rf /sd-ext/app-asec
         rm -rf /sd-ext/app-private
         rm -rf /sd-ext/app_s
         rm -rf /sd-ext/framework_s
@@ -425,17 +430,50 @@ checkdeasec()
 setdeasec()
 {
     sync
-    
+
     if [ "$2" == "disable" ]; then
         rm -f /data/deasec_enabled
     fi
 
     if [ "$2" == "enable" ]; then
-        echo "1" > /data/urandomwrapper_disabled
+        echo "1" > /data/deasec_enabled
+    fi
+
+    sync
+}
+
+checkusb()
+{
+    sync
+    
+    current=`grep -F "persist.sys.usb.config=" /system/build.prop | sed "s/persist.sys.usb.config=//g" | sed "s/,adb//g"`
+    if [ "$current" == "mtp" ]; then
+        echo "title=Change USB to UMS" > /tmp/usbstatus.prop
+        echo "text=This slot currently set to MTP mode. Select to change to UMS (mass_storage)." >> /tmp/usbstatus.prop
+        echo "task=mass_storage" >> /tmp/usbstatus.prop
+    else # if it's blank, will default to mass_storage from turbo ramdisk
+        echo "title=Change USB to MTP" > /tmp/usbstatus.prop
+        echo "text=This slot currently set to UMS (mass_storage) mode. Select to change to MTP." >> /tmp/usbstatus.prop
+        echo "task=mtp" >> /tmp/usbstatus.prop
     fi
     
     sync
 }
 
+setusb()
+{
+    sync
+    check=`cat /system/build.prop | grep 'persist.sys.usb.config='`
+    if [ "$check" == "" ]; then
+        # build.prop not set [ how nice and clean, must be one of my ROM's :) ]
+        echo "### Added by Turbo kernel" >> /system/build.prop
+        echo "persist.sys.usb.config=$2,adb" >> /system/build.prop
+        echo >> /system/build.prop
+    else
+        sed -i 's/persist.sys.usb.config=.*/persist.sys.usb.config='$2',adb/g' /system/build.prop
+        sed -i 's/sys.usb.config=.*//g' # erase incorrect property if found
+    fi
+    sync
+}
 
 $1 $1 $2 $3 $4

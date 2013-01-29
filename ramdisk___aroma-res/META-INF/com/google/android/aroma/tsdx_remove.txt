@@ -8,6 +8,7 @@
 
 <#d33>WARNING - The following will <b>NOT</b> be moved back to internal data:</#>
 <*>/data/app (Application APK's)</*>
+<*>/data/app-asec (encrypted apps)</*>
 
 The internal user application will be created new (empty). This is to avoid space issues. If you wish to keep these apps, boot the ROM now and back them up!
 
