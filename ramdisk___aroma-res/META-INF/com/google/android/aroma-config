@@ -156,7 +156,7 @@ if prop("systemselect.prop","selected")=="2" then
                 "Boot",                         "Boot " + getvar("slot2text") + " now",                                    "@slot2",
                 getvar("rec") + " Recovery",    "Enter " + getvar("rec") + " Recovery now",                                getvar("recicon"),
                 "Fix Wifi",                     "Force a Wifi module install if you have issues",                          "@wifi",
-                "Change Slot Mode",             "Current Slot Mode is " + file_getprop("/turbo/slot1mode.prop","mode"),    "@android",
+                "Change Slot Mode",             "Current Slot Mode is " + file_getprop("/turbo/slot2mode.prop","mode"),    "@android",
                 "Tweaks and Mods",              "Various things for your hacking pleasure",                                "@customize"
         );
     endif;
@@ -175,7 +175,7 @@ if prop("systemselect.prop","selected")=="3" then
                 "Boot",                         "Boot " + getvar("slot3text") + " now",                                    "@slot3",
                 getvar("rec") + " Recovery",    "Enter " + getvar("rec") + " Recovery now",                                getvar("recicon"),
                 "Fix Wifi",                     "Force a Wifi module install if you have issues",                          "@wifi",
-                "Change Slot Mode",             "Current Slot Mode is " + file_getprop("/turbo/slot1mode.prop","mode"),    "@android",
+                "Change Slot Mode",             "Current Slot Mode is " + file_getprop("/turbo/slot3mode.prop","mode"),    "@android",
                 "Tweaks and Mods",              "Various things for your hacking pleasure",                                "@customize"
         );
     endif;
@@ -194,7 +194,7 @@ if prop("systemselect.prop","selected")=="4" then
                 "Boot",                         "Boot " + getvar("slot4text") + " now",                                    "@slot4",
                 getvar("rec") + " Recovery",    "Enter " + getvar("rec") + " Recovery now",                                getvar("recicon"),
                 "Fix Wifi",                     "Force a Wifi module install if you have issues",                          "@wifi",
-                "Change Slot Mode",             "Current Slot Mode is " + file_getprop("/turbo/slot1mode.prop","mode"),    "@android",
+                "Change Slot Mode",             "Current Slot Mode is " + file_getprop("/turbo/slot4mode.prop","mode"),    "@android",
                 "Tweaks and Mods",              "Various things for your hacking pleasure",                                "@customize"
         );
     endif;
