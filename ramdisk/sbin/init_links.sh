@@ -100,7 +100,7 @@ busybox ln -s -f busybox md5sum
 busybox ln -s -f busybox mesg
 busybox ln -s -f busybox mkdir
 busybox ln -s -f busybox mkdosfs
-busybox ln -s -f busybox mke2fs
+#busybox ln -s -f busybox mke2fs
 busybox ln -s -f busybox mkfifo
 busybox ln -s -f busybox mkfs.ext2
 busybox ln -s -f busybox mkfs.vfat
