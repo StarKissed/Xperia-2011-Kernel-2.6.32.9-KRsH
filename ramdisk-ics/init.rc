@@ -556,5 +556,6 @@ service suntrolkac /system/bin/suntrolkac
     oneshot
 
 
-#on property:sys.boot_completed=1
+on property:sys.boot_completed=1
 #    exec /sbin/app2sd.sh
+    exec /sbin/turbo_helper.sh enableurandom

@@ -143,7 +143,6 @@ mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandlin
         echo "[TSDX] TSDX Enabled" >>/boot.log
         # only proceed if data has been populated (i.e. ROM has booted at least once)
         # this is to ensure permissions are not broken
-        mount -o rw,remount -t rootfs rootfs /
         if [ ! -d /sd-ext ]; then
             rm -r -f /sd-ext
             mkdir -p /sd-ext
@@ -152,7 +151,6 @@ mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandlin
         fi
         chmod 775 /sd-ext
         chown 0:0 /sd-ext
-        mount -o ro,remount -t rootfs rootfs /
         umount -l /sd-ext
         umount -l /dev/block/mmcblk0p2
         umount -l /dev/block/vold/179:2
@@ -204,13 +202,14 @@ mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandlin
             ln -s /sd-ext/system_slot$1 /data/system
         fi
     fi
-    echo "[TURBO] Stage 2 finished, continue standard Android boot. Bye!" >>boot.log
-    date >>boot.log
+    
+    sync
 }
 
 
 mountproc()
 {
+    mount -o rw,remount -t rootfs rootfs /
     source /sbin/bootrec-device
     busybox echo 200 > $BOOTREC_LED_RED
     busybox echo 200 > $BOOTREC_LED_GREEN
@@ -241,16 +240,22 @@ mountproc()
         mounter 1
     fi
     
+    echo "[TURBO] Relocating dalvik-cache to /data/dalvik-cache..." >>/boot.log
+    mkdir /data/dalvik-cache>>/boot.log
+        chown system:system /data/dalvik-cache>>/boot.log
+        chmod 0771 /data/dalvik-cache>>/boot.log
+    mkdir /cache/dalvik-cache>>/boot.log
+        chown system:system /cache/dalvik-cache>>/boot.log
+        chmod 0771 /cache/dalvik-cache>>/boot.log
+    mount -o bind /data/dalvik-cache /cache/dalvik-cache>>/boot.log
+    
     sync
     
-    mkdir /data/dalvik-cache
-        chown system:system /data/dalvik-cache
-        chmod 0771 /data/dalvik-cache
-    mkdir /cache/dalvik-cache
-        chown system:system /cache/dalvik-cache
-        chmod 0771 /cache/dalvik-cache
-    mount -o bind /data/dalvik-cache /cache/dalvik-cache
+    echo "[TURBO] Stage 2 finished, continue standard Android boot. Bye!" >>/boot.log
+    date >>/boot.log
     
+    sync
+    mount -o ro,remount -t rootfs rootfs / >>/boot.log
     sync
     
     busybox echo 0 > $BOOTREC_LED_RED
@@ -310,7 +315,6 @@ settsdx()
         rm -rf /data/tsdx
         if [ ! -d /sd-ext ]; then
             # just in case
-            mount -o rw,remount -t rootfs rootfs /
             rm -f /sd-ext # in case it's non-directory
             mkdir /sd-ext
             chmod -R 775 /sd-ext
@@ -355,5 +359,44 @@ setdefaultslot()
     sync
 }
 
+
+checkurandom()
+{
+    sync
+    
+    if [ -e /data/urandomwrapper_disabled ]; then
+        echo "title=Set urandom as entropy device" > /tmp/urandomstatus.prop
+        echo "text=Not a seeder - this has 0% footprint. On ROM startup will replace the 'random' node with the faster urandom device." >> /tmp/urandomstatus.prop
+        echo "task=enable" >> /tmp/urandomstatus.prop
+    else
+        echo "title=Restore random entropy device" > /tmp/urandomstatus.prop
+        echo "text=Use standard random device for entropy" >> /tmp/urandomstatus.prop
+        echo "task=disable" >> /tmp/urandomstatus.prop
+    fi
+    
+    sync
+}
+
+seturandom()
+{
+    if [ "$2" == "enable" ]; then
+        rm -f /data/urandomwrapper_disabled
+    fi
+
+    if [ "$2" == "disable" ]; then
+        echo "1" > /data/urandomwrapper_disabled
+    fi
+}
+
+enableurandom()
+{
+    if [ ! -e /data/urandomwrapper_disabled ]; then
+        mount -o rw,remount -t rootfs rootfs /
+        rm -f /dev/random
+        mknod -m 444 /dev/random c 1 9
+        chown root:root /dev/random
+        mount -o ro,remount -t rootfs rootfs /
+    fi
+}
 
 $1 $1 $2 $3 $4
