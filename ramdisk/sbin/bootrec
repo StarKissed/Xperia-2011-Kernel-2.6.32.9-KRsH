@@ -9,6 +9,9 @@ busybox mkdir /turbo
 busybox mount -o bind /sdcard/turbo /turbo
 busybox rm /tmp/bootrec
 busybox mkdir /tmp
+busybox echo 0 > $BOOTREC_LED_RED
+busybox echo 0 > $BOOTREC_LED_GREEN
+busybox echo 0 > $BOOTREC_LED_BLUE
 /sbin/aroma 1 0 "/sbin/aroma-res.zip"
 # copy repair log to sdcard if requested
 if [ -e /tmp/turbo_repair.ready2copy ]; then
