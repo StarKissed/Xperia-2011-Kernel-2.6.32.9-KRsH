@@ -43,7 +43,7 @@ fontresload( "1", "ttf/Comfortaa.ttf", "20" ); #-- big
 ########################################
 ########################################
 
-exec("/sbin/multiboot_helper.sh", "checkfresh");
+exec("/sbin/turbo_helper.sh", "checkfresh");
 if getvar("exec_buffer") == "1\n"
 then
     textbox(
@@ -70,7 +70,7 @@ setvar("slot3text",    file_getprop("/turbo/slot3.prop","text"));
 setvar("slot4icon",    file_getprop("/turbo/slot4.prop","icon"));
 setvar("slot4text",    file_getprop("/turbo/slot4.prop","text"));
 
-exec("/sbin/multiboot_helper.sh", "checkdefault");
+exec("/sbin/turbo_helper.sh", "checkdefault");
 if getvar("exec_buffer") == "1\n" then 
     setvar("slot1default", "[Default]"); 
     setvar("slot2default", "");
@@ -145,7 +145,7 @@ endif;
 
 if prop("systemselect.prop","selected")=="2" then
     setvar("currentslot", "2");    
-    exec("/sbin/multiboot_helper.sh", "checkslot", "2");
+    exec("/sbin/turbo_helper.sh", "checkslot", "2");
     if getvar("exec_buffer") == "0\n"
     then
         menubox(
@@ -164,7 +164,7 @@ endif;
 
 if prop("systemselect.prop","selected")=="3" then
     setvar("currentslot", "3");    
-    exec("/sbin/multiboot_helper.sh", "checkslot", "3");
+    exec("/sbin/turbo_helper.sh", "checkslot", "3");
     if getvar("exec_buffer") == "0\n"
     then
         menubox(
@@ -183,7 +183,7 @@ endif;
 
 if prop("systemselect.prop","selected")=="4" then
     setvar("currentslot", "4");
-    exec("/sbin/multiboot_helper.sh", "checkslot", "4");
+    exec("/sbin/turbo_helper.sh", "checkslot", "4");
     if getvar("exec_buffer") == "0\n"
     then
         menubox(
@@ -268,7 +268,7 @@ endif;
 ##########
 # Tweaks
 if prop("systemtask.prop","selected")=="5" then
-    exec("/sbin/multiboot_helper.sh", "checktsdx", getvar("currentslot"));
+    exec("/sbin/turbo_helper.sh", "checktsdx", getvar("currentslot"));
     
     menubox("Tweaks and Mods",
             "Please select the task you wish to perform.",
@@ -286,7 +286,7 @@ if prop("systemtask.prop","selected")=="5" then
                 resread("tsdx_install.txt")
             );
     
-            exec("/sbin/multiboot_helper.sh", "settsdx", file_getprop("/tmp/tsdxstatus.prop","task"));
+            exec("/sbin/turbo_helper.sh", "settsdx", file_getprop("/tmp/tsdxstatus.prop","task"));
             
             viewbox(
                 "TSDX Installation",
@@ -378,7 +378,7 @@ endif;
             "(4) Fourth slot "          + getvar("slot4default"),  getvar("slot4text"),                             getvar("slot4icon")
         );
 
-        exec("/sbin/multiboot_helper.sh", "setdefaultslot", prop("newdefault.prop","selected"));
+        exec("/sbin/turbo_helper.sh", "setdefaultslot", prop("newdefault.prop","selected"));
 
         back("999");
     endif;
@@ -563,7 +563,7 @@ endif;
         
         exec("rm", "-f", "/turbo/system" + prop("slotdelete.prop","selected") + ".ext2.img");
         exec("rm", "-f", "/turbo/userdata" + prop("slotdelete.prop","selected") + ".ext2.img");
-        exec("/sbin/multiboot_helper.sh", "clearslot", prop("slotdelete.prop","selected"));
+        exec("/sbin/turbo_helper.sh", "clearslot", prop("slotdelete.prop","selected"));
         
         setvar("slot1icon",    file_getprop("/turbo/slot1.prop","icon"));
         setvar("slot1text",    file_getprop("/turbo/slot1.prop","text"));
@@ -608,7 +608,7 @@ endif;
 ########################################
 
 setvar("exec_buffer", "");
-exec("/sbin/multiboot_helper.sh", "checkslot", getvar("currentslot"));
+exec("/sbin/turbo_helper.sh", "checkslot", getvar("currentslot"));
 if getvar("exec_buffer") == "1\n"
 then
     selectbox(
@@ -643,7 +643,7 @@ then
     );
 
     if prop("slotsizes.prop","selected.1")=="1" then
-        exec("/sbin/multiboot_helper.sh", "checkcapacity", "mtdblock0");
+        exec("/sbin/turbo_helper.sh", "checkcapacity", "mtdblock0");
         writetmpfile("systemsize.prop", "size=" + prop("tmp.prop","tmp") + "\n");
     endif;
     if prop("slotsizes.prop","selected.1")=="2" then
@@ -653,7 +653,7 @@ then
         writetmpfile("systemsize.prop","size=655360\n");
     endif;
     if prop("slotsizes.prop","selected.2")=="1" then
-        exec("/sbin/multiboot_helper.sh", "checkcapacity", "mtdblock1");
+        exec("/sbin/turbo_helper.sh", "checkcapacity", "mtdblock1");
         writetmpfile("userdatasize.prop", "size=" + prop("tmp.prop","tmp") + "\n");
     endif;
     if prop("slotsizes.prop","selected.2")=="2" then
@@ -675,7 +675,7 @@ then
         alert("WARNING","You have selected the userdata size of 2800MB. This will take an EXTREMELY long time to complete. It is recommended to plug your charger in NOW.", "@warning");
     endif;
 
-    exec("sh", "/sbin/multiboot_helper.sh", "checkfree", "/sdcard", prop("systemsize.prop","size"), prop("userdatasize.prop","size"));
+    exec("sh", "/sbin/turbo_helper.sh", "checkfree", "/sdcard", prop("systemsize.prop","size"), prop("userdatasize.prop","size"));
     writetmpfile("sdcardfree.prop", "free=" + prop("tmp.prop","tmp") + "\n");
     
     if cmp(prop("sdcardfree.prop", "free"), "<", "0") then
