@@ -219,7 +219,6 @@ mountproc()
     mount /dev/block/mmcblk0p1 /sdcard >>/boot.log
     mount -o bind /sdcard/turbo /turbo >>/boot.log
     umount -l /sdcard >>/boot.log
-    rm -rf /sdcard
     if   [ -e /cache/multiboot1 ]; then
         rm /cache/multiboot1
         mounter 1
