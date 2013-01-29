@@ -3,6 +3,7 @@
 #set -x
 #exec >>/multiboot.log 2>&1
 
+
 checkfresh()
 {
     if [ ! -e /turbo/version ]; then
@@ -27,6 +28,7 @@ checkfresh()
     fi     
 }
 
+
 clearslot()
 {
     echo "icon=@slot$2" > /turbo/slot$2.prop
@@ -34,6 +36,7 @@ clearslot()
     echo "custom=true" >> /turbo/slot$2.prop
     echo "mode=JB-AOSP" >> /turbo/slot$2.prop
 }
+
 
 checkslot()
 {
@@ -43,6 +46,7 @@ checkslot()
         echo "0";
     fi
 }
+
 
 checkdefault()
 {
@@ -64,7 +68,6 @@ checkdefault()
 }
 
 
-
 makeimage()
 {
     if   [ "$3" == "system" ]; then
@@ -81,6 +84,7 @@ makeimage()
         tune2fs -C 1 -m 0 -f /turbo/userdata$2.ext2.img
     fi
 }
+
 
 copyimage()
 {
@@ -100,7 +104,8 @@ copyimage()
     rm -f -R /dest
 }
 
-mounter()
+
+mounter() # INTERNAL USE (params start at $1)
 {
     echo "About to mount Slot $1..."
     if  [ "$1" == "1" ]; then
@@ -185,6 +190,7 @@ mounter()
     fi
 }
 
+
 mountproc()
 {
     source /sbin/bootrec-device
@@ -204,11 +210,11 @@ mountproc()
     elif [ -e /cache/multiboot4 ]; then
         rm /cache/multiboot4
         mounter 4
-    elif [ -e /turbo/defaultboot_2 ]; then
+    elif [ -e /sdcard/turbo/defaultboot_2 ]; then
         mounter 2
-    elif [ -e /turbo/defaultboot_3 ]; then
+    elif [ -e /sdcard/turbo/defaultboot_3 ]; then
         mounter 3
-    elif [ -e /turbo/defaultboot_4 ]; then
+    elif [ -e /sdcard/turbo/defaultboot_4 ]; then
         mounter 4
     else
         mounter 1
@@ -231,6 +237,7 @@ mountproc()
     busybox echo 0 > $BOOTREC_LED_BLUE
 }
 
+
 checkfree()
 {
     FREE=`df | grep $2 | awk '{print $4}'`
@@ -239,10 +246,12 @@ checkfree()
     echo "tmp=`expr $SPACE - $INPUT`" > /tmp/aroma/tmp.prop
 }
 
+
 checkcapacity()
 {
     echo "tmp=`cat /proc/partitions | grep $2 | awk '{print $3}'`" > /tmp/aroma/tmp.prop
 }
+
 
 checktsdx()
 {
@@ -251,7 +260,7 @@ checktsdx()
     if  [ "$2" == "1" ]; then
         mount -t yaffs2 -o rw,noatime,nosuid,nodev  /dev/block/mtdblock1        /data
     else
-        losetup /dev/block/loop1 /turbo/userdata$1.ext2.img
+        losetup /dev/block/loop1 /turbo/userdata$2.ext2.img
         mount -t ext2   -o rw,noatime,nosuid,nodev   /dev/block/loop1    /data
     fi
     
@@ -265,5 +274,31 @@ checktsdx()
     
     sync
 }
+
+
+settsdx()
+{
+    sync
+    
+    if [ "$2" == "Install" ]; then
+        mkdir -p /data/tsdx
+        echo "1" > /data/tsdx/enabled
+    fi
+    
+    sync
+}
+
+
+setdefaultslot()
+{
+    sync
+    rm -f /turbo/defaultboot_1
+    rm -f /turbo/defaultboot_2
+    rm -f /turbo/defaultboot_3
+    rm -f /turbo/defaultboot_4
+    echo "1" > /turbo/defaultboot_$2
+    sync
+}
+
 
 $1 $1 $2 $3 $4

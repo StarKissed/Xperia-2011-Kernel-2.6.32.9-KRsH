@@ -286,8 +286,7 @@ if prop("systemtask.prop","selected")=="5" then
                 resread("tsdx_install.txt")
             );
     
-            exec("mkdir", "-p", "/data/tsdx");
-            write("/data/tsdx/enabled", "enabled\n");
+            exec("/sbin/multiboot_helper.sh", "settsdx", file_getprop("/tmp/tsdxstatus.prop","task"));
             
             viewbox(
                 "TSDX Installation",
@@ -354,7 +353,7 @@ endif;
     if prop("toolselect.prop","selected")=="1" then
         if getvar("slot1default") == "[Default]" then 
             setvar("currentdefault", "Slot 1");
-            setvar("slot1default", "[Current]"); 
+            setvar("slot1default", "[Current]");
         endif;
         if getvar("slot2default") == "[Default]" then 
             setvar("currentdefault", "Slot 2"); 
@@ -378,51 +377,9 @@ endif;
             "(3) Third slot "           + getvar("slot3default"),  getvar("slot3text"),                             getvar("slot3icon"),
             "(4) Fourth slot "          + getvar("slot4default"),  getvar("slot4text"),                             getvar("slot4icon")
         );
-        
-        if prop("newdefault.prop","selected")=="1" then
-            setvar("slot1default", "[Default]");
-            setvar("slot2default", "");
-            setvar("slot3default", "");
-            setvar("slot4default", "");
-            write("/turbo/defaultboot_1","1");
-            exec("rm", "-f", "/turbo/defaultboot_2");
-            exec("rm", "-f", "/turbo/defaultboot_3");
-            exec("rm", "-f", "/turbo/defaultboot_4");
-        endif;
-        
-        if prop("newdefault.prop","selected")=="2" then
-            setvar("slot1default", "");
-            setvar("slot2default", "[Default]");
-            setvar("slot3default", "");
-            setvar("slot4default", "");
-            write("/turbo/defaultboot_2","1");
-            exec("rm", "-f", "/turbo/defaultboot_1");
-            exec("rm", "-f", "/turbo/defaultboot_3");
-            exec("rm", "-f", "/turbo/defaultboot_4");
-        endif;
-        
-        if prop("newdefault.prop","selected")=="3" then
-            setvar("slot1default", "");
-            setvar("slot2default", "");
-            setvar("slot3default", "[Default]");
-            setvar("slot4default", "");
-            write("/turbo/defaultboot_3","1");
-            exec("rm", "-f", "/turbo/defaultboot_1");
-            exec("rm", "-f", "/turbo/defaultboot_2");
-            exec("rm", "-f", "/turbo/defaultboot_4");
-        endif;
-        
-        if prop("newdefault.prop","selected")=="4" then
-            setvar("slot1default", "");
-            setvar("slot2default", "");
-            setvar("slot3default", "");
-            setvar("slot4default", "[Default]");
-            write("/turbo/defaultboot_4","1");
-            exec("rm", "-f", "/turbo/defaultboot_1");
-            exec("rm", "-f", "/turbo/defaultboot_2");
-            exec("rm", "-f", "/turbo/defaultboot_3");
-        endif;
-        
+
+        exec("/sbin/multiboot_helper.sh", "setdefaultslot", prop("newdefault.prop","selected"));
+
         back("999");
     endif;
        

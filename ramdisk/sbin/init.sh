@@ -161,23 +161,26 @@ else
     fi
     if [ "$mode" == "" ]
     then
-        busybox echo '[TURBO] Error - mode "$mode" is not valid! Entering Recovery.' >>boot.log
+        busybox echo '[TURBO] Error - mode is not valid! Entering Recovery.' >>boot.log
         busybox echo 0 > /sys/module/msm_fb/parameters/align_buffer
         load_image=$rec_image
     elif [ "$mode" == "JB-AOSP" ]
     then
         busybox echo 1 > /sys/module/msm_fb/parameters/align_buffer
         load_image=/sbin/ramdisk-jb.cpio
+        busybox echo '[TURBO] Mode is JB-AOSP' >>boot.log
     elif [ "$mode" == "ICS-AOSP" ]
     then
         busybox echo 0 > /sys/module/msm_fb/parameters/align_buffer
         load_image=/sbin/ramdisk-ics.cpio
+        busybox echo '[TURBO] Mode is ICS-AOSP' >>boot.log
     elif [ "$mode" == "ICS-Stock" ]
     then
         busybox echo 0 > /sys/module/msm_fb/parameters/align_buffer
         load_image=/sbin/ramdisk-ics-stock.cpio
+        busybox echo '[TURBO] Mode is ICS-Stock' >>boot.log
     else
-        busybox echo '[TURBO] Error - mode "$mode" is not valid! Entering Recovery.' >>boot.log
+        busybox echo '[TURBO] Error - mode is not valid! Entering Recovery.' >>boot.log
         busybox echo 0 > /sys/module/msm_fb/parameters/align_buffer
         load_image=$rec_image
     fi
