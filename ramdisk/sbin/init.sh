@@ -123,41 +123,41 @@ else
     then
         # Slot 1 (one time only)
         mode=$(busybox grep -F "mode=" /turbo/slot1mode.prop | busybox sed "s/mode=//g")
-        busybox echo '[TURBO] Booting Internal/Slot 1 (One-time only); Mode is $mode' >>boot.log
+        busybox echo '[TURBO] Booting Internal/Slot 1 (One-time only)' >>boot.log
     elif [ -e /cache/multiboot2 ]
     then
         # Slot 2 (one time only)
         mode=$(busybox grep -F "mode=" /turbo/slot2mode.prop | busybox sed "s/mode=//g")
-        busybox echo '[TURBO] Booting Slot 2 (One-time only); Mode is $mode' >>boot.log
+        busybox echo '[TURBO] Booting Slot 2 (One-time only)' >>boot.log
     elif [ -e /cache/multiboot3 ]
     then
         # Slot 3 (one time only)
         mode=$(busybox grep -F "mode=" /turbo/slot3mode.prop | busybox sed "s/mode=//g")
-        busybox echo '[TURBO] Booting Slot 3 (One-time only); Mode is $mode' >>boot.log
+        busybox echo '[TURBO] Booting Slot 3 (One-time only)' >>boot.log
     elif [ -e /cache/multiboot4 ]
     then
         # Slot 4 (one time only)
         mode=$(busybox grep -F "mode=" /turbo/slot4mode.prop | busybox sed "s/mode=//g")
-        busybox echo '[TURBO] Booting Slot 4 (One-time only); Mode is $mode' >>boot.log
+        busybox echo '[TURBO] Booting Slot 4 (One-time only)' >>boot.log
     elif [ -e /turbo/defaultboot_2 ]
     then
         # Slot 2 (default)
         mode=$(busybox grep -F "mode=" /turbo/slot2mode.prop | busybox sed "s/mode=//g")
-        busybox echo '[TURBO] Booting Slot 2 (Default); Mode is $mode' >>boot.log
+        busybox echo '[TURBO] Booting Slot 2 (Default)' >>boot.log
     elif [ -e /turbo/defaultboot_3 ]
     then
         # Slot 3 (default)
         mode=$(busybox grep -F "mode=" /turbo/slot3mode.prop | busybox sed "s/mode=//g")
-        busybox echo '[TURBO] Booting Slot 3 (Default); Mode is $mode' >>boot.log
+        busybox echo '[TURBO] Booting Slot 3 (Default)' >>boot.log
     elif [ -e /turbo/defaultboot_4 ]
     then
         # Slot 4 (default)
         mode=$(busybox grep -F "mode=" /turbo/slot4mode.prop | busybox sed "s/mode=//g")
-        busybox echo '[TURBO] Booting Slot 4 (Default); Mode is $mode' >>boot.log
+        busybox echo '[TURBO] Booting Slot 4 (Default)' >>boot.log
     else
         # Internal/Slot 1 (default)
         mode=$(busybox grep -F "mode=" /turbo/slot1mode.prop | busybox sed "s/mode=//g")
-        busybox echo '[TURBO] Booting Internal/Slot 1 (Default); Mode is $mode' >>boot.log
+        busybox echo '[TURBO] Booting Internal/Slot 1 (Default)' >>boot.log
     fi
     if [ "$mode" == "" ]
     then

@@ -1,7 +1,7 @@
 #!/sbin/sh
 
 #set -x
-#exec >>/multiboot.log 2>&1
+#exec >>/turbo_helper.log 2>&1
 
 
 checkfresh()
@@ -105,24 +105,21 @@ copyimage()
 }
 
 
-mounter() # INTERNAL USE (params start at $1)
+mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandline)
 {
-    echo "About to mount Slot $1..."
+    echo "About to mount Slot $1..." >>/boot.log
+    umount /system
+    umount /data
     if  [ "$1" == "1" ]; then
-        mount -t yaffs2 -o ro,remount                       /dev/block/mtdblock0        /system
-        mount -t yaffs2 -o rw,remount,noatime,nosuid,nodev  /dev/block/mtdblock1        /data
+        mount -t yaffs2 -o rw                       /dev/block/mtdblock0        /system
+        mount -t yaffs2 -o ro,remount               /dev/block/mtdblock0        /system
+        mount -t yaffs2 -o rw,noatime,nosuid,nodev  /dev/block/mtdblock1        /data
     else
-        mount /dev/block/mmcblk0p1 /sdcard
-        mount -o bind /sdcard/turbo /turbo
-        umount -l /sdcard
-        rm -rf /sdcard
-        losetup /dev/block/loop0 /turbo/system$1.ext2.img
-        losetup /dev/block/loop1 /turbo/userdata$1.ext2.img
-        umount /system
-        umount /data
-        mount -t ext2   -o rw                        /dev/block/loop0    /system
-        mount -t ext2   -o ro,remount                /dev/block/loop0    /system
-        mount -t ext2   -o rw,noatime,nosuid,nodev   /dev/block/loop1    /data
+        losetup /dev/block/loop0 /turbo/system$1.ext2.img >>/boot.log
+        losetup /dev/block/loop1 /turbo/userdata$1.ext2.img >>/boot.log
+        mount -t ext2   -o rw                        /dev/block/loop0    /system >>/boot.log
+        mount -t ext2   -o ro,remount                /dev/block/loop0    /system >>/boot.log
+        mount -t ext2   -o rw,noatime,nosuid,nodev   /dev/block/loop1    /data >>/boot.log
     fi
     
     busybox echo 0 > $BOOTREC_LED_RED
@@ -197,7 +194,11 @@ mountproc()
     busybox echo 200 > $BOOTREC_LED_RED
     busybox echo 200 > $BOOTREC_LED_GREEN
     busybox echo 200 > $BOOTREC_LED_BLUE
-    echo "Mountproc started..."
+    echo "[TURBO] Stage-2 (mountproc) started..." >>/boot.log
+    mount /dev/block/mmcblk0p1 /sdcard >>/boot.log
+    mount -o bind /sdcard/turbo /turbo >>/boot.log
+    umount -l /sdcard
+    rm -rf /sdcard
     if   [ -e /cache/multiboot1 ]; then
         rm /cache/multiboot1
         mounter 1
@@ -210,11 +211,11 @@ mountproc()
     elif [ -e /cache/multiboot4 ]; then
         rm /cache/multiboot4
         mounter 4
-    elif [ -e /sdcard/turbo/defaultboot_2 ]; then
+    elif [ -e /turbo/defaultboot_2 ]; then
         mounter 2
-    elif [ -e /sdcard/turbo/defaultboot_3 ]; then
+    elif [ -e /turbo/defaultboot_3 ]; then
         mounter 3
-    elif [ -e /sdcard/turbo/defaultboot_4 ]; then
+    elif [ -e /turbo/defaultboot_4 ]; then
         mounter 4
     else
         mounter 1
