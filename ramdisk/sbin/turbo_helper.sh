@@ -307,7 +307,7 @@ settsdx()
     fi
 
     if [ "$2" == "Remove" ]; then
-        rm -rf > /data/tsdx
+        rm -rf /data/tsdx
         if [ ! -d /sd-ext ]; then
             # just in case
             mount -o rw,remount -t rootfs rootfs /

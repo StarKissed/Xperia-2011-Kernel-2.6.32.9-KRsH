@@ -6,8 +6,9 @@
 <*>/sd-ext/lib_s (Sense libraries)</*>
 <*>/sd-ext/system_slot# (to /data/system)</*>
 
-<#c00>WARNING - The following will <b>NOT</b> be moved back to internal data:</#>
+<#d33>WARNING - The following will <b>NOT</b> be moved back to internal data:</#>
 <*>/data/app (Application APK's)</*>
+
 The internal user application will be created new (empty). This is to avoid space issues. If you wish to keep these apps, boot the ROM now and back them up!
 
 After the removal process, you will have the option to delete the TSDX folders on /sd-ext. This is recommended to keep sd-ext clean, but only if you are not still using TSDX in another slot.

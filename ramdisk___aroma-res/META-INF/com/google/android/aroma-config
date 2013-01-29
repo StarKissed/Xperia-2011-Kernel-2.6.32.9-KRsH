@@ -310,23 +310,23 @@ if prop("systemtask.prop","selected")=="5" then
 
             selectbox(
                 "TSDX - Clean sd-ext?",
-                "Do you want to keep the TSDX data on sd-ext?",
+                "Do you want to clean the TSDX data on sd-ext?",
                 "@disk",
                 "tsdxclean.prop",
-                "Yes", "Keep TSDX data on sd-ext - You will still use TSDX on other slots, or just want to keep it.",  1,
-                "No",  "Remove TSDX data on sd-ext - You don't want to keep anything and don't use TSDX on other slots.\n\n" + 
-                            "APPS THAT WERE LINKED WILL BE LOST FOREVER. ONLY DO THIS IF ALL OTHER SLOTS HAVE TSDX ALREADY REMOVED, OTHERWISE THEY WILL BECOME UNBOOTABLE.",
-                                                                                                                       0
+                "No",  "Keep TSDX data on sd-ext - You will still use TSDX on other slots, or just want to keep it.",   1,
+                "Yes", "Remove TSDX data on sd-ext - Don't keep anything on sd-ext. " + 
+                            "ONLY SELECT THIS IF TSDX IS DISABLED ON ALL SLOTS.",  0
             );
 
-            if prop("tsdxclean.prop","selected")=="2" then
+            if prop("tsdxclean.prop","selected.0")=="2" then
                 pleasewait("Cleaning sd-ext...");
                 exec("/sbin/turbo_helper.sh", "settsdx", "clean");
             endif;
             
             viewbox(
                 "TSDX Removal",
-                "Turbo SD-eXt has been removed.",
+                "Turbo SD-eXt has been removed.\n\n" +
+                "If you have used Data2SD in Titanium Backup, the data has not been touched (it's at /sd-ext/data2). You can re-use this data in Titanium Backup when needed, or erase it yourself.",
             "@about"
             );
         endif;
