@@ -379,6 +379,8 @@ checkurandom()
 
 seturandom()
 {
+    sync
+    
     if [ "$2" == "enable" ]; then
         rm -f /data/urandomwrapper_disabled
     fi
@@ -386,17 +388,54 @@ seturandom()
     if [ "$2" == "disable" ]; then
         echo "1" > /data/urandomwrapper_disabled
     fi
+    
+    sync
 }
 
 enableurandom()
 {
     if [ ! -e /data/urandomwrapper_disabled ]; then
+        sync
         mount -o rw,remount -t rootfs rootfs /
         rm -f /dev/random
         mknod -m 444 /dev/random c 1 9
         chown root:root /dev/random
         mount -o ro,remount -t rootfs rootfs /
+        sync
     fi
 }
+
+checkdeasec()
+{
+    sync
+    
+    if [ -e /data/deasec_enabled ]; then
+        echo "title=Disable Deasec" > /tmp/deasecstatus.prop
+        echo "text=Restore buggy asec function of Jellybean" >> /tmp/deasecstatus.prop
+        echo "task=disable" >> /tmp/deasecstatus.prop
+    else
+        echo "title=Enable Deasec" > /tmp/deasecstatus.prop
+        echo "text=By Giovanni Aneloni. This will force ROM to decrypt any apps on startup." >> /tmp/deasecstatus.prop
+        echo "task=enable" >> /tmp/deasecstatus.prop
+    fi
+    
+    sync
+}
+
+setdeasec()
+{
+    sync
+    
+    if [ "$2" == "disable" ]; then
+        rm -f /data/deasec_enabled
+    fi
+
+    if [ "$2" == "enable" ]; then
+        echo "1" > /data/urandomwrapper_disabled
+    fi
+    
+    sync
+}
+
 
 $1 $1 $2 $3 $4

@@ -271,6 +271,7 @@ if prop("systemtask.prop","selected")=="5" then
     exec("/sbin/turbo_helper.sh", "checktsdx", getvar("currentslot"));
     # above helper function will mount correct data partition
     exec("/sbin/turbo_helper.sh", "checkurandom");
+    exec("/sbin/turbo_helper.sh", "checkdeasec");
     
     menubox("Tweaks and Mods",
             "Please select the task you wish to perform.",
@@ -278,6 +279,7 @@ if prop("systemtask.prop","selected")=="5" then
             "tweaksmods.prop",
             file_getprop("/tmp/tsdxstatus.prop","task") + " TSDX",  "TSDX - Native, robust sd-ext solution (select for more info)", "@about",
             file_getprop("/tmp/urandomstatus.prop","title"),        file_getprop("/tmp/urandomstatus.prop","text"),                 "@disk"
+            file_getprop("/tmp/deasecstatus.prop","title"),         file_getprop("/tmp/deasecstatus.prop","text"),                  "@android"
     );
     
     if prop("tweaksmods.prop","selected")=="1" then
@@ -341,6 +343,11 @@ if prop("systemtask.prop","selected")=="5" then
     if prop("tweaksmods.prop","selected")=="2" then
         exec("/sbin/turbo_helper.sh", "seturandom", file_getprop("/tmp/urandomstatus.prop","task"));
     endif;
+    
+    if prop("tweaksmods.prop","selected")=="3" then
+        exec("/sbin/turbo_helper.sh", "setdeasec", file_getprop("/tmp/deasecstatus.prop","task"));
+    endif;
+    
     exec("sync");
     exec("umount", "/data");
     back("1");
