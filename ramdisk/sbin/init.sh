@@ -1,13 +1,13 @@
 #!/sbin/busybox sh
-set -x
 _PATH="$PATH"
 export PATH=/sbin
-#export ANDROID_CACHE=/cache
+export ANDROID_CACHE=/cache
 
 cd /
 busybox echo "[TURBO] Stage 1 begins" >>boot.log
 busybox date >>boot.log
-exec >>boot.log 2>&1
+#set -x
+#exec >>boot.log 2>&1
 busybox rm /init
 
 # device specific vars
@@ -117,7 +117,7 @@ then
     busybox echo 0 > /sys/module/msm_fb/parameters/align_buffer
 else
     # Prepare for normal boot
-	busybox echo 'ANDROID BOOT' >>boot.log
+	busybox echo '[TURBO] Booting Android...' >>boot.log
     # Slot select
     if   [ -e /cache/multiboot1 ]
     then
@@ -204,7 +204,7 @@ busybox echo 200 > $BOOTREC_LED_RED
 busybox echo 200 > $BOOTREC_LED_GREEN
 busybox echo 200 > $BOOTREC_LED_BLUE
 
-#busybox cp /boot.log /cache/boot_last.log
+#busybox cp /boot.log /cache/turboboot_last.log
 
 busybox umount -l /cache
 busybox umount -l /proc
@@ -214,6 +214,7 @@ busybox umount -l /turbo
 
 busybox rm -rf /cache
 busybox rm -rf /dev/*
+busybox echo "[TURBO] Stage 1 finished" >>boot.log
 busybox date >>boot.log
 export PATH="${_PATH}"
 
