@@ -107,19 +107,31 @@ copyimage()
 
 mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandline)
 {
-    echo "About to mount Slot $1..." >>/boot.log
-    umount /system
-    umount /data
     if  [ "$1" == "1" ]; then
-        mount -t yaffs2 -o rw                       /dev/block/mtdblock0        /system
-        mount -t yaffs2 -o ro,remount               /dev/block/mtdblock0        /system
-        mount -t yaffs2 -o rw,noatime,nosuid,nodev  /dev/block/mtdblock1        /data
+        echo "[TURBO] No need to remount Slot 1" >>/boot.log
     else
+        echo "[TURBO] About to switch mounts to Slot $1..." >>/boot.log
+        umount /system
+        umount /data
         losetup /dev/block/loop0 /turbo/system$1.ext2.img >>/boot.log
         losetup /dev/block/loop1 /turbo/userdata$1.ext2.img >>/boot.log
         mount -t ext2   -o rw                        /dev/block/loop0    /system >>/boot.log
         mount -t ext2   -o ro,remount                /dev/block/loop0    /system >>/boot.log
         mount -t ext2   -o rw,noatime,nosuid,nodev   /dev/block/loop1    /data >>/boot.log
+        systemloop=`losetup | grep '/turbo/system$1.ext2.img' | awk '{print $1}' | sed -e 's/:$//'`
+        systemmount=`mount | grep $systemloop | awk '{print $3}'`
+        dataloop=`losetup | grep '/turbo/userdata$1.ext2.img' | awk '{print $1}' | sed -e 's/:$//'`
+        datamount=`mount | grep $dataloop | awk '{print $3}'`
+        if [ "$systemmount" == "/system" ]; then
+            echo "[TURBO] /turbo/system$1.ext2.img mounted on /system via $systemloop" >>/boot.log
+        else
+            echo "[TURBO] Problem mounting /turbo/system$1.ext2.img to /system!" >>/boot.log
+        fi
+        if [ "$datamount" == "/data" ]; then
+            echo "[TURBO] /turbo/userdata$1.ext2.img mounted on /data via $dataloop" >>/boot.log
+        else
+            echo "[TURBO] Problem mounting /turbo/userdata$1.ext2.img to /data!" >>/boot.log
+        fi
     fi
     
     busybox echo 0 > $BOOTREC_LED_RED
@@ -128,6 +140,7 @@ mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandlin
     
     # TSDX
     if [ -e /data/tsdx/enabled ] && [ -d /data/data ]; then
+        echo "[TSDX] TSDX Enabled" >>/boot.log
         # only proceed if data has been populated (i.e. ROM has booted at least once)
         # this is to ensure permissions are not broken
         mount -o rw,remount -t rootfs rootfs /
@@ -140,13 +153,14 @@ mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandlin
         chmod 775 /sd-ext
         chown 0:0 /sd-ext
         mount -o ro,remount -t rootfs rootfs /
-        umount /sd-ext
-        umount /dev/block/mmcblk0p2
-        umount /dev/block/vold/179:2
-        mount -t ext4 -o noauto_da_alloc,data=ordered,commit=15,barrier=1,nouser_xattr,errors=continue,noatime,nodiratime,nosuid,nodev /dev/block/mmcblk0p2 /sd-ext
+        umount -l /sd-ext
+        umount -l /dev/block/mmcblk0p2
+        umount -l /dev/block/vold/179:2
+        mount -t ext4 -o noauto_da_alloc,data=ordered,commit=15,barrier=1,nouser_xattr,errors=continue,noatime,nodiratime,nosuid,nodev /dev/block/mmcblk0p2 /sd-extecho >>/boot.log
         if [ ! -d /sd-ext/data2 ]; then
             # Create data2sd folder for Titanium Backup if needed (to share app data between slots)
             mkdir -p /sd-ext/data2
+            echo "[TSDX] Created /sd-ext/data2 for sharing app data (via Titanium Backup)" >>/boot.log
         fi
         for f in app app_s app-private framework_s lib_s; do
             if [ ! -h /data/$f ]; then
@@ -156,6 +170,7 @@ mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandlin
                 # /data/$f not linked yet
                 if [ -d /data/$f ]; then
                     # folder exists, move it
+                    echo "[TSDX] Moving /data/$f to /sd-ext/$f" >>/boot.log
                     mv /data/$f /sd-ext/$f
                 fi
                 busybox echo 0 > $BOOTREC_LED_RED
@@ -163,9 +178,11 @@ mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandlin
                 busybox echo 0 > $BOOTREC_LED_BLUE
                 if [ ! -d /sd-ext/$f ]; then
                     # folder not exists yet (empty on internal), create it
+                    echo "[TSDX] Creating /sd-ext/$f" >>/boot.log
                     mkdir -p /sd-ext/$f
                 fi
                 # link it
+                echo "[TSDX] Linking /data/$f to /sd-ext/$f" >>/boot.log
                 ln -s /sd-ext/$f /data/$f
             fi
         done
@@ -176,15 +193,19 @@ mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandlin
                 busybox echo 200 > $BOOTREC_LED_RED
                 busybox echo 200 > $BOOTREC_LED_GREEN
                 busybox echo 200 > $BOOTREC_LED_BLUE
+                echo "[TSDX] Moving /data/system to /sd-ext/system_slot$1" >>/boot.log
                 mv /data/system /sd-ext/system_slot$1
                 busybox echo 0 > $BOOTREC_LED_RED
                 busybox echo 0 > $BOOTREC_LED_GREEN
                 busybox echo 0 > $BOOTREC_LED_BLUE
             fi
             # link it
+            echo "Linking /data/system to /sd-ext/system_slot$1"
             ln -s /sd-ext/system_slot$1 /data/system
         fi
     fi
+    echo "[TURBO] Stage 2 finished, continue standard Android boot. Bye!" >>boot.log
+    date >>boot.log
 }
 
 
@@ -197,7 +218,7 @@ mountproc()
     echo "[TURBO] Stage-2 (mountproc) started..." >>/boot.log
     mount /dev/block/mmcblk0p1 /sdcard >>/boot.log
     mount -o bind /sdcard/turbo /turbo >>/boot.log
-    umount -l /sdcard
+    umount -l /sdcard >>/boot.log
     rm -rf /sdcard
     if   [ -e /cache/multiboot1 ]; then
         rm /cache/multiboot1
