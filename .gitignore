@@ -52,6 +52,8 @@ ramdisk_kxp/
 ramdisk_new/
 ramdisk_old/
 ramdisk/sbin/aroma-res.zip
+ramdisk/sbin/ramdisk-cwm.cpio
+ramdisk/sbin/ramdisk-ics.cpio
 ramdisk/sbin/ramdisk-jb.cpio
 ramdisk/sbin/ramdisk-recovery.cpio
 scripts/
