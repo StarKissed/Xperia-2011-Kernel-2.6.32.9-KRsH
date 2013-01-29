@@ -300,12 +300,46 @@ checktsdx()
 settsdx()
 {
     sync
-    
+
     if [ "$2" == "Install" ]; then
         mkdir -p /data/tsdx
         echo "1" > /data/tsdx/enabled
     fi
-    
+
+    if [ "$2" == "Remove" ]; then
+        rm -rf > /data/tsdx
+        if [ ! -d /sd-ext ]; then
+            # just in case
+            mount -o rw,remount -t rootfs rootfs /
+            rm -f /sd-ext # in case it's non-directory
+            mkdir /sd-ext
+            chmod -R 775 /sd-ext
+            chown -R 0:0 /sd-ext
+        fi
+        mount /dev/block/mmcblk0p2 /sd-ext
+        for f in app app_s app-private framework_s lib_s system; do
+            if [ -h /data/$f ]; then
+                # only delete and copy if symbolic link (i.e. TSDX is active)
+                rm -f /data/$f
+                if [ "$f" == "system" ]; then
+                    # special case (always move/delete from sd-ext)
+                    mv -f /sd-ext/system_slot$3 /data/system
+                elif [ "$f" != "app" ]; then
+                    # only copy if not /data/app
+                    cp -a /sd-ext/$f /data/$f
+                fi
+            fi
+        done
+    fi
+
+    if [ "$2" == "clean" ]; then
+        rm -rf /sd-ext/app
+        rm -rf /sd-ext/app-private
+        rm -rf /sd-ext/app_s
+        rm -rf /sd-ext/framework_s
+        rm -rf /sd-ext/lib_s
+    fi
+
     sync
 }
 

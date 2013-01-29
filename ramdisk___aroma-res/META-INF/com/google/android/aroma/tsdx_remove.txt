@@ -1,0 +1,15 @@
+<@fill>This process will remove the TSDX sd-ext function from the ROM in this Slot. The following will be moved back to the internal data partition:</@>
+
+<*>/sd-ext/app_s (Sense APK's)</*>
+<*>/sd-ext/app-private (Private app/data)</*>
+<*>/sd-ext/framework_s (Sense framework)</*>
+<*>/sd-ext/lib_s (Sense libraries)</*>
+<*>/sd-ext/system_slot# (to /data/system)</*>
+
+<#c00>WARNING - The following will <b>NOT</b> be moved back to internal data:</#>
+<*>/data/app (Application APK's)</*>
+The internal user application will be created new (empty). This is to avoid space issues. If you wish to keep these apps, boot the ROM now and back them up!
+
+After the removal process, you will have the option to delete the TSDX folders on /sd-ext. This is recommended to keep sd-ext clean, but only if you are not still using TSDX in another slot.
+
+<b>Press Next to remove TSDX for this Slot.</b>

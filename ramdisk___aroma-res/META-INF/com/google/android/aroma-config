@@ -296,6 +296,41 @@ if prop("systemtask.prop","selected")=="5" then
             "@about"
             );
         endif;
+        
+        if file_getprop("/tmp/tsdxstatus.prop","task") == "Remove" then
+            textbox(
+                "TSDX Removal",
+                "Remove Turbo SD-eXt from this slot",
+                "@about",
+                resread("tsdx_remove.txt")
+            );
+
+            pleasewait("Removing TSDX...");
+            exec("/sbin/turbo_helper.sh", "settsdx", file_getprop("/tmp/tsdxstatus.prop","task"), getvar("currentslot"));
+
+            selectbox(
+                "TSDX - Clean sd-ext?",
+                "Do you want to keep the TSDX data on sd-ext?",
+                "@disk",
+                "tsdxclean.prop",
+                "Yes", "Keep TSDX data on sd-ext - You will still use TSDX on other slots, or just want to keep it.",  1,
+                "No",  "Remove TSDX data on sd-ext - You don't want to keep anything and don't use TSDX on other slots.\n\n" + 
+                            "APPS THAT WERE LINKED WILL BE LOST FOREVER. ONLY DO THIS IF ALL OTHER SLOTS HAVE TSDX ALREADY REMOVED, OTHERWISE THEY WILL BECOME UNBOOTABLE.",
+                                                                                                                       0
+            );
+
+            if prop("tsdxclean.prop","selected")=="2" then
+                pleasewait("Cleaning sd-ext...");
+                exec("/sbin/turbo_helper.sh", "settsdx", "clean");
+            endif;
+            
+            viewbox(
+                "TSDX Removal",
+                "Turbo SD-eXt has been removed.",
+            "@about"
+            );
+        endif;
+        
     endif;
     exec("sync");
     exec("umount", "/data");
