@@ -791,7 +791,7 @@ then
         alert("WARNING","You have selected the userdata size of 2800MB. This will take an EXTREMELY long time to complete. It is recommended to plug your charger in NOW.", "@warning");
     endif;
 
-    exec("sh", "/sbin/turbo_helper.sh", "checkfree", "/sdcard", prop("systemsize.prop","size"), prop("userdatasize.prop","size"));
+    exec("/sbin/turbo_helper.sh", "checkfree", "/sdcard", prop("systemsize.prop","size"), prop("userdatasize.prop","size"));
     writetmpfile("sdcardfree.prop", "free=" + prop("tmp.prop","tmp") + "\n");
     
     if cmp(prop("sdcardfree.prop", "free"), "<", "0") then
