@@ -26,4 +26,5 @@ if [ -e /tmp/bootrec ]; then
 fi
 busybox sync
 busybox umount -l /dev/block/mmcblk0p1
+busybox umount -l /dev/block/mmcblk0p2
 reboot

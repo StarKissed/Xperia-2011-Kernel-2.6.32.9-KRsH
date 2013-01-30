@@ -43,6 +43,56 @@ fontresload( "1", "ttf/Comfortaa.ttf", "20" ); #-- big
 ########################################
 ########################################
 
+if file_getprop("/cache/dorepair.prop","repair") == "sdcard";
+then
+    viewbox(
+        "Problem Detected",
+        "Your SDCard has been mounted read-only, meaning it has a damaged filesystem.\n\n"+
+        "There is a chance that Slots 2 and above (if used) may not be fully repaired, in this case they will need to be reinstalled.\n\n"+
+        "Press next to repair the SDCard, and attempt to repair the Slot images.\n\n\n"+
+        "<b><#f55>To prevent errors to your SDCard in future, always make sure to shutdown the device CLEANLY and only pull the battery out as an extreme last resort!</#></b>",
+        "@repair"
+    );
+
+    writetmpfile(
+        "repairtasks.prop",
+        "item.1.1=1\n"+
+        "item.2.1=1\n"+
+        "item.2.2=1\n"+
+        "item.3.1=1\n"+
+        "item.3.2=1\n"+
+        "item.3.3=1\n"+
+        "item.4.1=1\n"+
+        "item.4.2=1\n"+
+        "item.4.3=1\n"+
+        "item.5.1=1\n"+
+        "item.5.2=1\n"+
+        "item.5.3=1\n"+
+        "item.6.1=1\n"
+    );
+
+    ini_set("text_next", "Reboot");
+    writetmpfile(
+        "repairdo.prop",
+        "do=yes\n"
+    );
+
+    writetmpfile("doslot.prop", "slot=na\n");
+
+    install(
+        "Repairing",
+        "<b>Turbo Kernel</b> is now performing scans and repairing where necessary.",
+        "@repair",
+        "The repair process has completed. Be sure to check the log for details."
+    );
+    exec("sync");
+    exit("");
+endif;
+
+
+########################################
+########################################
+
 exec("/sbin/turbo_helper.sh", "checkfresh");
 if getvar("exec_buffer") == "1\n"
 then
@@ -472,8 +522,12 @@ endif;
                     "Scan and repair system",     "Repair errors on the system ext2 image for Slot 3",         1,      #-- item.4.1  = 1
                     "Scan and repair userdata",   "Repair errors on the userdata ext2 image for Slot 3",       1,      #-- item.4.2  = 1
                     "Fix Permissions",            "Fix permissions on Userdata for Slot 3",                    1,      #-- item.4.3  = 1
-                    "Other",                      "",                                                          2,  #-- Group 5. key = "item.5.x"
-                    "Save logs",                  "Save the scan/repair log to turbo_repair.log on microSD",   1       #-- item.5.1  = 1
+                    "Slot 4",                     "",                                                          2,  #-- Group 5. key = "item.5.x"
+                    "Scan and repair system",     "Repair errors on the system ext2 image for Slot 4",         1,      #-- item.5.1  = 1
+                    "Scan and repair userdata",   "Repair errors on the userdata ext2 image for Slot 4",       1,      #-- item.5.2  = 1
+                    "Fix Permissions",            "Fix permissions on Userdata for Slot 4",                    1,      #-- item.5.3  = 1
+                    "Other",                      "",                                                          2,  #-- Group 6. key = "item.6.x"
+                    "Save logs",                  "Save the scan/repair log to turbo_repair.log on microSD",   1       #-- item.6.1  = 1
             );
         endif; 
    
@@ -490,7 +544,10 @@ endif;
             "item.4.1=1\n"+
             "item.4.2=1\n"+
             "item.4.3=1\n"+
-            "item.5.1=1\n"
+            "item.5.1=1\n"+
+            "item.5.2=1\n"+
+            "item.5.3=1\n"+
+            "item.6.1=1\n"
         );
         endif; 
 

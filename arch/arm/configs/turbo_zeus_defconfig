@@ -464,7 +464,7 @@ CONFIG_ZBOOT_ROM_BSS=0x0
 CONFIG_CMDLINE="console=ttyMSM2,115200n8 androidboot.hardware=semc mtdparts=msm_nand:317440k@94720k(system),624128k@412160k(userdata),8192k@1036288k(cache),12800k@81920k(boot)"
 #CONFIG_CMDLINE="console=ttyMSM2,115200n8 androidboot.hardware=semc mtdparts=msm_nand:320000k@94720k(system),389120k@414720k(userdata),103936k@940544k(cache),12800k@81920k(boot),136704k@803840k(appslog)"
 # CONFIG_XIP_KERNEL is not set
-CONFIG_KEXEC=y
+CONFIG_KEXEC=n
 CONFIG_ATAGS_PROC=y
 CONFIG_CRASH_NOTES=y
 CONFIG_CRASH_NOTES_MAGIC=y

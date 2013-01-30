@@ -80,6 +80,17 @@ if [ ! -d /sdcard/turbo]; then
     busybox mkdir /sdcard/turbo
 fi
 
+# sdcard error check
+if [ -e /cache/dorepair.prop ]; then
+    busybox rm -f /cache/dorepair.prop
+fi
+sdcard_test=`busybox mount | busybox grep '/sdcard'`
+sdcard_test2=`busybox mount | busybox grep '/sdcard' | busybox sed "s/(ro,//g"`
+if [ "$sdcard_test" != "$sdcard_test2" ]; then
+    busybox touch /cache/recovery/boot
+    busybox echo "repair=sdcard" > /cache/dorepair.prop
+fi
+
 # bind-mount turbo data then unmount sdcard
 busybox mkdir /turbo
 busybox mount -o bind /sdcard/turbo /turbo

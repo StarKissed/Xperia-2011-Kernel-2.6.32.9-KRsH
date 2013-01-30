@@ -85,7 +85,7 @@ repairslot()
     umount /system
     mount -o rw /dev/block/mmcblk0p1 /sdcard
     echo " " >> /tmp/turbo_repair.log
-    if [ -e /sdcard/$3$2.ext2.img ]; then
+    if [ -e /sdcard/turbo/$3$2.ext2.img ]; then
         echo "### About to run e2fsck on $3 partition for Slot $2... " >> /tmp/turbo_repair.log
         echo "###" >> /tmp/turbo_repair.log
         e2fsck -p -f -v /sdcard/turbo/$3$2.ext2.img >> /tmp/turbo_repair.log
@@ -106,7 +106,11 @@ finish()
 
 copylog()
 {
+    umount -l /dev/block/mmcblk0p1
+    mount -o rw /dev/block/mmcblk0p1 /sdcard
     cp -f /tmp/turbo_repair.log /sdcard/turbo_repair.log
+    umount -l /dev/block/mmcblk0p1
+    mount -o rw /dev/block/mmcblk0p1 /sdcard
 }
 
 $1 $1 $2 $3

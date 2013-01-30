@@ -128,6 +128,20 @@ if file_getprop("/tmp/aroma/repairdo.prop","do") == "yes" then
         ui_print(" ");
         set_progress(0.90);
     endif;
+    
+    if file_getprop("/tmp/aroma/repairtasks.prop","item.5.1") == "1" then
+        ui_print("Scanning /system for Slot 4 and repairing...");
+        run_program("/sbin/busybox", "sh", "/sbin/repair_helper.sh", "repairslot", "4", "system");
+        ui_print(" ");
+        set_progress(0.70);
+    endif;
+
+    if file_getprop("/tmp/aroma/repairtasks.prop","item.5.2") == "1" then
+        ui_print("Scanning /data for Slot 4 and repairing...");
+        run_program("/sbin/busybox", "sh", "/sbin/repair_helper.sh", "repairslot", "4", "userdata");
+        ui_print(" ");
+        set_progress(0.90);
+    endif;
 
     if file_getprop("/tmp/aroma/repairtasks.prop","item.1.1") == "1" then
         ui_print("Fixing permissions on internal /data...");
@@ -149,10 +163,17 @@ if file_getprop("/tmp/aroma/repairdo.prop","do") == "yes" then
         ui_print(" ");
         set_progress(0.99);
     endif;
+    
+    if file_getprop("/tmp/aroma/repairtasks.prop","item.5.3") == "1" then
+        ui_print("Fixing permissions on Slot 4 /data...");
+        run_program("/sbin/busybox", "sh", "/sbin/repair_helper.sh", "fixpermissions", "4");
+        ui_print(" ");
+        set_progress(0.99);
+    endif;
 
     run_program("/sbin/busybox", "sh", "/sbin/repair_helper.sh", "finish");
 
-    if file_getprop("/tmp/aroma/repairtasks.prop","item.5.1") == "1" then
+    if file_getprop("/tmp/aroma/repairtasks.prop","item.6.1") == "1" then
         ui_print("Copying repair log to /sdcard/turbo_repair.log...");
         run_program("/sbin/busybox", "sh", "/sbin/repair_helper.sh", "copylog");
         ui_print(" ");
