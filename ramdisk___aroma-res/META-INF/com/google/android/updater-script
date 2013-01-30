@@ -10,22 +10,22 @@ if file_getprop("/tmp/aroma/doslot.prop","slot") == "2" then
     ui_print("@Slot 2 generation");
     ui_print(" ");
     ui_print("Generating system image...");
-    run_program("/sbin/busybox", "sh", "/sbin/multiboot_helper.sh", "makeimage", "2", "system", file_getprop("/tmp/aroma/systemsize.prop","size"));
+    run_program("/sbin/busybox", "sh", "/sbin/turbo_helper.sh", "makeimage", "2", "system", file_getprop("/tmp/aroma/systemsize.prop","size"));
     ui_print(" ");
     set_progress(0.20);
     ui_print("Generating userdata image...");
-    run_program("/sbin/busybox", "sh", "/sbin/multiboot_helper.sh", "makeimage", "2", "userdata", file_getprop("/tmp/aroma/userdatasize.prop","size"));
+    run_program("/sbin/busybox", "sh", "/sbin/turbo_helper.sh", "makeimage", "2", "userdata", file_getprop("/tmp/aroma/userdatasize.prop","size"));
     ui_print(" ");
     set_progress(0.40);
     if file_getprop("/tmp/aroma/copysystem.prop","do") == "yes" then
         ui_print("Copying internal system to new image...");
-        run_program("/sbin/busybox", "sh", "/sbin/multiboot_helper.sh", "copyimage", "2", "system");
+        run_program("/sbin/busybox", "sh", "/sbin/turbo_helper.sh", "copyimage", "2", "system");
         ui_print(" ");
         set_progress(0.70);
     endif;
     if file_getprop("/tmp/aroma/copyuserdata.prop","do") == "yes" then
         ui_print("Copying internal userdata to new image...");
-        run_program("/sbin/busybox", "sh", "/sbin/multiboot_helper.sh", "copyimage", "2", "userdata");
+        run_program("/sbin/busybox", "sh", "/sbin/turbo_helper.sh", "copyimage", "2", "userdata");
         ui_print(" ");
     endif;
 endif;
@@ -34,22 +34,22 @@ if file_getprop("/tmp/aroma/doslot.prop","slot") == "3" then
     ui_print("@Slot 3 generation");
     ui_print(" ");
     ui_print("Generating system image...");
-    run_program("/sbin/busybox", "sh", "/sbin/multiboot_helper.sh", "makeimage", "3", "system", file_getprop("/tmp/aroma/systemsize.prop","size"));
+    run_program("/sbin/busybox", "sh", "/sbin/turbo_helper.sh", "makeimage", "3", "system", file_getprop("/tmp/aroma/systemsize.prop","size"));
     ui_print(" ");
     set_progress(0.20);
     ui_print("Generating userdata image...");
-    run_program("/sbin/busybox", "sh", "/sbin/multiboot_helper.sh", "makeimage", "3", "userdata", file_getprop("/tmp/aroma/userdatasize.prop","size"));
+    run_program("/sbin/busybox", "sh", "/sbin/turbo_helper.sh", "makeimage", "3", "userdata", file_getprop("/tmp/aroma/userdatasize.prop","size"));
     ui_print(" ");
     set_progress(0.40);
     if file_getprop("/tmp/aroma/copysystem.prop","do") == "yes" then
         ui_print("Copying internal system to new image...");
-        run_program("/sbin/busybox", "sh", "/sbin/multiboot_helper.sh", "copyimage", "3", "system");
+        run_program("/sbin/busybox", "sh", "/sbin/turbo_helper.sh", "copyimage", "3", "system");
         ui_print(" ");
         set_progress(0.70);
     endif;
     if file_getprop("/tmp/aroma/copyuserdata.prop","do") == "yes" then
         ui_print("Copying internal userdata to new image...");
-        run_program("/sbin/busybox", "sh", "/sbin/multiboot_helper.sh", "copyimage", "3", "userdata");
+        run_program("/sbin/busybox", "sh", "/sbin/turbo_helper.sh", "copyimage", "3", "userdata");
         ui_print(" ");
     endif;
 endif;
@@ -58,22 +58,22 @@ if file_getprop("/tmp/aroma/doslot.prop","slot") == "4" then
     ui_print("@Slot 4 generation");
     ui_print(" ");
     ui_print("Generating system image...");
-    run_program("/sbin/busybox", "sh", "/sbin/multiboot_helper.sh", "makeimage", "4", "system", file_getprop("/tmp/aroma/systemsize.prop","size"));
+    run_program("/sbin/busybox", "sh", "/sbin/turbo_helper.sh", "makeimage", "4", "system", file_getprop("/tmp/aroma/systemsize.prop","size"));
     ui_print(" ");
     set_progress(0.20);
     ui_print("Generating userdata image...");
-    run_program("/sbin/busybox", "sh", "/sbin/multiboot_helper.sh", "makeimage", "4", "userdata", file_getprop("/tmp/aroma/userdatasize.prop","size"));
+    run_program("/sbin/busybox", "sh", "/sbin/turbo_helper.sh", "makeimage", "4", "userdata", file_getprop("/tmp/aroma/userdatasize.prop","size"));
     ui_print(" ");
     set_progress(0.40);
     if file_getprop("/tmp/aroma/copysystem.prop","do") == "yes" then
         ui_print("Copying internal system to new image...");
-        run_program("/sbin/busybox", "sh", "/sbin/multiboot_helper.sh", "copyimage", "4", "system");
+        run_program("/sbin/busybox", "sh", "/sbin/turbo_helper.sh", "copyimage", "4", "system");
         ui_print(" ");
         set_progress(0.70);
     endif;
     if file_getprop("/tmp/aroma/copyuserdata.prop","do") == "yes" then
         ui_print("Copying internal userdata to new image...");
-        run_program("/sbin/busybox", "sh", "/sbin/multiboot_helper.sh", "copyimage", "4", "userdata");
+        run_program("/sbin/busybox", "sh", "/sbin/turbo_helper.sh", "copyimage", "4", "userdata");
         ui_print(" ");
     endif;
 endif;
