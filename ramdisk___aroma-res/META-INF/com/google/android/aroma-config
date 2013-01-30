@@ -849,8 +849,7 @@ then
         "<b>Turbo Kernel</b> is now performing the slot creation.",
         "@cog",
         "All done! You can now boot and/or perform Recovery tasks on this slot.\n\n"+
-        "<b>If you are not installing a Jellybean ROM in this Slot, be *sure* to change the Mode in the Slot Menu.</b>\n\n\n"+
-        "REMEMBER: *Never* unmount the SDCard when in this Slot or you may corrupt the images and your SDCard."
+        "<b>If you are not installing a Jellybean ROM in this Slot, be *sure* to change the Mode in the Slot Menu.</b>"
     );
     pleasewait("Synchronizing... WAIT!");
     exec("sync");
