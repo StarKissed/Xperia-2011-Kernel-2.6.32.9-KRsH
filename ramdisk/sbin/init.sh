@@ -68,7 +68,7 @@ busybox echo 200 > $BOOTREC_LED_GREEN
 busybox echo 200 > $BOOTREC_LED_BLUE
 
 # default ramdisk
-load_image=/sbin/ramdisk-recovery.cpio
+load_image=/sbin/ramdisk-twrp.cpio
 
 # mount sdcard to load settings and such
 busybox mkdir /sdcard
@@ -117,12 +117,19 @@ busybox pkill -f "busybox cat ${BOOTREC_EVENT}"
 if [ -e /tmp/bootrec ]
 then
     busybox rm /tmp/bootrec
-    if [ -e /cache/cwm ]; then
-        # cwm-recovery ramdisk
-        rec_image=/sbin/ramdisk-cwm.cpio
+    if [ ! -e /cache/turbo.recovery ]; then
+        # set default recovery
+        busybox echo "recovery=twrp" > /cache/turbo.recovery
+    fi
+    recovery=`busybox cat /cache/turbo.recovery | busybox sed s/recovery=//g`
+    if [ -e /sbin/ramdisk-$recovery.cpio ]; then
+        busybox echo '[TURBO] Recovery image - /sbin/ramdisk-'$recovery'.cpio' >>boot.log
+        rec_image=/sbin/ramdisk-$recovery.cpio
 	else
-        # twrp-recovery ramdisk
-        rec_image=/sbin/ramdisk-recovery.cpio
+        # invalid recovery ramdisk
+        busybox echo '[TURBO] Recovery image /sbin/ramdisk-'$recovery'.cpio not found!' >>boot.log
+        busybox echo '        Using /sbin/ramdisk-twrp.cpio instead' >>boot.log
+        rec_image=/sbin/ramdisk-twrp.cpio
     fi
     load_image=$rec_image
     busybox echo 0 > /sys/module/msm_fb/parameters/align_buffer
@@ -191,7 +198,7 @@ else
         load_image=/sbin/ramdisk-ics-stock.cpio
         busybox echo '[TURBO] Mode is ICS-Stock' >>boot.log
     else
-        busybox echo '[TURBO] Error - mode is not valid! Entering Recovery.' >>boot.log
+        busybox echo '[TURBO] Error - mode ('$mode') is not valid! Entering Recovery.' >>boot.log
         busybox echo 0 > /sys/module/msm_fb/parameters/align_buffer
         load_image=$rec_image
     fi
