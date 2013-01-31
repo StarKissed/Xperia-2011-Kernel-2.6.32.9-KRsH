@@ -33,8 +33,8 @@ echo "[i] ramdisk-jb.cpio built"
 ./$MKBOOTFS ./ramdisk-ics > ramdisk/sbin/ramdisk-ics.cpio
 echo "[i] ramdisk-ics.cpio built"
 
-./$MKBOOTFS ./ramdisk-recovery > ramdisk/sbin/ramdisk-recovery.cpio
-echo "[i] ramdisk-recovery.cpio built"
+./$MKBOOTFS ./ramdisk-twrp > ramdisk/sbin/ramdisk-twrp.cpio
+echo "[i] ramdisk-twrp.cpio built"
 
 ./$MKBOOTFS ./ramdisk-cwm > ramdisk/sbin/ramdisk-cwm.cpio
 echo "[i] ramdisk-cwm.cpio built"

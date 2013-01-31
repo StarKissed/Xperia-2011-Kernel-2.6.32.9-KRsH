@@ -55,7 +55,7 @@ ramdisk/sbin/aroma-res.zip
 ramdisk/sbin/ramdisk-cwm.cpio
 ramdisk/sbin/ramdisk-ics.cpio
 ramdisk/sbin/ramdisk-jb.cpio
-ramdisk/sbin/ramdisk-recovery.cpio
+ramdisk/sbin/ramdisk-twrp.cpio
 scripts/
 usr/.initramfs_data.cpio.d
 usr/gen_init_cpio
