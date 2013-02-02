@@ -9,27 +9,29 @@ PATH="/system/xbin:/system/sbin:/system/bin"
 
 mount -o rw,remount -t rootfs rootfs /
 
-echo "### Deasec started...">>/deasec.log
+echo "### Deasec started...">/deasec.log
 
 for ASEC in $(find /data/app-asec/ -name '*.asec')
 do
-    echo "[i] Deasec $ASEC">>/deasec.log
+    echo "[!] Deasec $ASEC">>/deasec.log
 	PKG=$(basename $ASEC|cut -d'-' -f1)
-	echo "   Package name $PKG">>/deasec.log
+	echo "    [i] Package name $PKG">>/deasec.log
 	if [ -d /mnt/asec/$PKG*/lib ]
 	then
-		echo "   Relocate libs">>/deasec.log
+		echo "    [i] Relocate libs...">>/deasec.log
 		find /data/data/$PKG/ -type l -name lib -exec rm {} \;
-		cp -r /mnt/asec/$PKG*/lib /data/data/$PKG/
-		echo "   Fix libs permissions">>/deasec.log
-		chown -R system:system /data/data/$PKG/lib
-		chmod -R 755 /data/data/$PKG/lib
+		cp -r /mnt/asec/$PKG*/lib /data/data/$PKG/>>/deasec.log
+		echo "    [i] Fix libs permissions...">>/deasec.log
+		chown -R system:system /data/data/$PKG/lib>>/deasec.log
+		chmod -R 755 /data/data/$PKG/lib>>/deasec.log
 	fi
 	APK=$(pm path $PKG|cut -d':' -f2)
-	echo "   APK location $APK">>/deasec.log
+	echo "    [i] New APK location - $APK">>/deasec.log
         cp $APK /data/local/tmp/pkg.apk
         chmod 644 /data/local/tmp/pkg.apk
-        pm install -r -f /data/local/tmp/pkg.apk && rm /data/local/tmp/pkg.apk
+        pm install -r -f /data/local/tmp/pkg.apk && rm /data/local/tmp/pkg.apk>>/deasec.log
+    echo "    [i] Delete - $ASEC">>/deasec.log
+        rm -f $ASEC>>/deasec.log
 done
 
 echo "### Deasec finished">>/deasec.log

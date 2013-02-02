@@ -74,11 +74,7 @@ load_image=/sbin/ramdisk-twrp.cpio
 busybox mkdir /sdcard
 busybox mount /dev/block/mmcblk0p1 /sdcard
 
-# freshboot check
-if [ ! -d /sdcard/turbo]; then
-    busybox rm -rf /sdcard/turbo  # incase a non-directory of same name exists
-    busybox mkdir /sdcard/turbo
-fi
+busybox mkdir /sdcard/turbo
 
 # sdcard error check
 if [ -e /cache/dorepair.prop ]; then
