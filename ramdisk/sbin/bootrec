@@ -4,9 +4,9 @@
 source /sbin/bootrec-device
 busybox mount -t yaffs2 $BOOTREC_CACHE /cache
 busybox mkdir /sdcard
-busybox mount /dev/block/mmcblk0p1 /sdcard
+busybox mount -o errors=remount-ro /dev/block/mmcblk0p1 /sdcard
 busybox mkdir /turbo
-busybox mount -o bind /sdcard/turbo /turbo
+busybox mount -o bind,errors=remount-ro /sdcard/turbo /turbo
 busybox rm /tmp/bootrec
 busybox mkdir /tmp
 busybox echo 0 > $BOOTREC_LED_RED
