@@ -530,6 +530,7 @@ service suntrolkac /system/bin/suntrolkac
 
 
 on property:sys.boot_completed=1
+    # We need to run fixes again since init can mess some of them up
     exec /sbin/fixes.sh
     exec /sbin/turbo_helper.sh enableurandom
     exec /sbin/deasec.sh

@@ -217,7 +217,16 @@ mountproc()
     echo "[TURBO] Stage-2 (mountproc) started..." >>/boot.log
     mount /dev/block/mmcblk0p1 /sdcard >>/boot.log
     mount -o bind /sdcard/turbo /turbo >>/boot.log
-    umount -l /sdcard >>/boot.log
+    # Test for ext# SDCard
+    sdcard_ext=`mount | grep '/sdcard'`
+    sdcard_ext2=`mount | grep '/sdcard' | sed "s/type ext//g"`
+    if [ "$sdcard_ext" == "$sdcard_ext2" ]; then
+        # not ext#, unmount it
+        umount -l /sdcard >>/boot.log
+    else
+        # is ext#, keep mounted
+        echo "[TURBO] ext-formatted SDCard detected" >>/boot.log
+    fi
     if   [ -e /cache/multiboot1 ]; then
         rm /cache/multiboot1
         mounter 1
@@ -251,6 +260,9 @@ mountproc()
     
     sync
     
+    echo "[TURBO] Running fixes/hacks script for specific ROM fixes..." >>/boot.log
+    /sbin/fixes.sh
+
     echo "[TURBO] Stage 2 finished, continue standard Android boot. Bye!" >>/boot.log
     date >>/boot.log
     
