@@ -15,9 +15,21 @@ repairsd()
     umount -l /dev/block/mmcblk0p2
     if   [ "$2" == "1" ]; then
         echo " " >> /tmp/turbo_repair.log
-        echo "### About to run fsck_msdos on microSD FAT32 partition... " >> /tmp/turbo_repair.log
-        echo "###" >> /tmp/turbo_repair.log
-        fsck_msdos -y /dev/block/mmcblk0p1 >> /tmp/turbo_repair.log
+        mount -o ro /dev/block/mmcblk0p1 /sdcard
+        sdcard_test=`busybox mount | busybox grep '/sdcard'`
+        sdcard_test2=`busybox mount | busybox grep '/sdcard' | busybox sed "s/ext2//g"`
+        umount -l /dev/block/mmcblk0p1
+        if [ "$sdcard_test" != "$sdcard_test2" ]; then
+            # ext2
+            echo "### About to run e2fsck on microSD ext2 partition... " >> /tmp/turbo_repair.log
+            echo "###" >> /tmp/turbo_repair.log
+            e2fsck -p -f -v /dev/block/mmcblk0p1 >> /tmp/turbo_repair.log
+        else
+            # vfat assumed
+            echo "### About to run fsck_msdos on microSD FAT32 partition... " >> /tmp/turbo_repair.log
+            echo "###" >> /tmp/turbo_repair.log
+            fsck_msdos -y /dev/block/mmcblk0p1 >> /tmp/turbo_repair.log
+        fi
     elif [ "$2" == "2" ]; then
         echo " " >> /tmp/turbo_repair.log
         if [ -e /dev/block/mmcblk0p2 ]; then

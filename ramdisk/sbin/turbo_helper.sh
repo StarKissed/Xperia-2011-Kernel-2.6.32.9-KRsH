@@ -215,8 +215,8 @@ mountproc()
     busybox echo 200 > $BOOTREC_LED_GREEN
     busybox echo 200 > $BOOTREC_LED_BLUE
     echo "[TURBO] Stage-2 (mountproc) started..." >>/boot.log
-    mount /dev/block/mmcblk0p1 /sdcard >>/boot.log
-    mount -o bind /sdcard/turbo /turbo >>/boot.log
+    mount -o errors=remount-ro /dev/block/mmcblk0p1 /sdcard >>/boot.log
+    mount -o bind,errors=remount-ro /sdcard/turbo /turbo >>/boot.log
     # Test for ext# SDCard
     sdcard_ext=`mount | grep '/sdcard'`
     sdcard_ext2=`mount | grep '/sdcard' | sed "s/type ext//g"`

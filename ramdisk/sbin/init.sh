@@ -72,7 +72,7 @@ load_image=/sbin/ramdisk-twrp.cpio
 
 # mount sdcard to load settings and such
 busybox mkdir /sdcard
-busybox mount /dev/block/mmcblk0p1 /sdcard
+busybox mount -o errors=remount-ro /dev/block/mmcblk0p1 /sdcard
 
 busybox mkdir /sdcard/turbo
 
@@ -89,7 +89,7 @@ fi
 
 # bind-mount turbo data then unmount sdcard
 busybox mkdir /turbo
-busybox mount -o bind /sdcard/turbo /turbo
+busybox mount -o bind,errors=remount-ro /sdcard/turbo /turbo
 busybox umount -l /sdcard
 busybox rm -rf /sdcard
 
