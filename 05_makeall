@@ -2,7 +2,7 @@ version=r13b2
 
 # zeus/zeusc
 sed -i 's/CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=\"$(KERNEL_LOCAL_VERSION)-Turbo_'$version'\"/g' ./arch/arm/configs/turbo_zeus_defconfig
-./01_makeconfig_zeus
+./01_makeconfig zeus
 ./03_makekernel
 ./04_makebootimg_bcm4329
 mv ./boot.img ./boot_zeus_turbo-r13b2.img

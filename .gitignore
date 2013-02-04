@@ -9,6 +9,7 @@
 .version
 boot.img
 boot.img-kernel
+boot_*.img
 vmlinux
 vmlinux.lds
 Module.symvers
