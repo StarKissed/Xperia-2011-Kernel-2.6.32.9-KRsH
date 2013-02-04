@@ -15,8 +15,6 @@ if [ "$turbo.mode" == "jb" ]; then
     mount -o remount,ro /
 fi
 
-if [ "$turbo.mode" == "ics" ]; then
-    # Required for some older ICS ROM's
-    echo "[TURBO] Setting rwxrwxrwx on /data/dalvik-cache for ICS" >>boot.log
-    chmod -R 777 /data/dalvik-cache
-fi
+# Required for some ROM's
+echo "[TURBO] Setting rwxrwxrwx on /data/dalvik-cache" >>boot.log
+chmod -R 777 /data/dalvik-cache
