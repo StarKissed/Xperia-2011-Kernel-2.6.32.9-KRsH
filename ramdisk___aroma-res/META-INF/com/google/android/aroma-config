@@ -33,12 +33,16 @@ ini_set("text_finish", "Finish");
 ini_set("text_none", "None");
 ini_set("force_colorspace","bgra");
 
-calibrate("0.8939","43","0.9616","25");
-
 theme("cosmicui");
 
 fontresload( "0", "ttf/Comfortaa.ttf", "14" ); #-- small
 fontresload( "1", "ttf/Comfortaa.ttf", "20" ); #-- big
+
+# calibration
+exec("/sbin/turbo_helper.sh", "checkmodel");
+if getvar("exec_buffer") == "zeus\n"; then
+    calibrate("0.8939","43","0.9616","25");
+endif;    
 
 ########################################
 ########################################

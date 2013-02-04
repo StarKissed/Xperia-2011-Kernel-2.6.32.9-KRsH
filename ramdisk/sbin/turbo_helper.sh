@@ -3,6 +3,14 @@
 #set -x
 #exec >>/turbo_helper.log 2>&1
 
+checkmodel()
+{
+    model=`cat /default.prop | grep 'ro.product.device' | sed "s/ro.product.device=//g"`
+    if [ "$model" == "zeus" ] || [ "$model" == "zeusc" ]; then
+        echo "zeus"
+    fi
+}
+
 
 checkfresh()
 {
