@@ -28,6 +28,25 @@ checkfresh()
     fi     
 }
 
+checkoldimages()
+{
+    if [ -e /sdcard/system2.ext2.img ]   ||
+       [ -e /sdcard/userdata2.ext2.img ] ||
+       [ -e /sdcard/system3.ext2.img ]   ||
+       [ -e /sdcard/userdata3.ext2.img ]; then
+        echo "1";
+    else
+        echo "0";
+    fi     
+}
+
+moveoldimages()
+{
+    mv /sdcard/system2.ext2.img /turbo/
+    mv /sdcard/userdata2.ext2.img /turbo/
+    mv /sdcard/system3.ext2.img /turbo/
+    mv /sdcard/userdata3.ext2.img /turbo/
+}
 
 clearslot()
 {

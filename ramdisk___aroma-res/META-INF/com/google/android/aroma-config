@@ -104,6 +104,22 @@ then
     );
 endif;
 
+exec("/sbin/turbo_helper.sh", "checkoldimages");
+if getvar("exec_buffer") == "1\n"
+then
+    viewbox(
+        "Upgrade detected",
+        "Turbo Kernel has detected that you have Slot images in the old r12 (and earlier) location.\n\n" +
+        "These images must be moved to the new location (the folder 'turbo' on SDCard).\n\n" +
+        "This may take some time, ensure you have enough battery charge before continuing.\n\n" +
+        "Press next to start moving these images.",
+        "@about"
+    );
+    pleasewait("Moving images...");
+    exec("/sbin/turbo_helper.sh", "moveoldimages");
+endif;
+
+
 ########################################
 ##### LOAD CUSTOMIZATION
 ########################################
