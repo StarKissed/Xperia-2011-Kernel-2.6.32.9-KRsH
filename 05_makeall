@@ -5,4 +5,4 @@ sed -i 's/CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=\"$(KERNEL_LOCAL_VERSION)-T
 ./01_makeconfig zeus
 ./03_makekernel
 ./04_makebootimg_bcm4329
-mv ./boot.img ./boot_zeus_turbo-r13b2.img
+mv -f ./boot.img ./boot_zeus_turbo-r13b2.img

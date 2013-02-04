@@ -268,6 +268,14 @@ mountproc()
         mounter 1
     fi
     
+    # system free check
+    systemfree=`df -m | grep '/system' | awk '{print $4}'`
+    if test $systemfree -lt 2; then 
+        echo "safe=no" > /tmp/systemfree.prop
+        /sbin/aroma 1 0 "/sbin/aroma-res.zip"
+    fi
+    
+    
     echo "[TURBO] Relocating dalvik-cache to /data/dalvik-cache..." >>/boot.log
     mkdir /data/dalvik-cache>>/boot.log
         chown system:system /data/dalvik-cache>>/boot.log
