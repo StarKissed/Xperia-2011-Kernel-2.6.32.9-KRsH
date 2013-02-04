@@ -11,3 +11,8 @@ persist.sys.usb.config=mass_storage,adb
 #
 ro.semc.product.device=R800
 
+# Specify that device is both GSM/CDMA to get around CyanogenMod assert safety-checks
+# This if more than fine, since the installed ROM will override these
+ro.product.device=zeusc
+ro.build.product=zeus
+
