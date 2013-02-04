@@ -561,3 +561,4 @@ on property:sys.boot_completed=1
     exec /sbin/fixes.sh
     exec /sbin/turbo_helper.sh enableurandom
     exec /sbin/deasec.sh
+    exec /sbin/disableals.sh

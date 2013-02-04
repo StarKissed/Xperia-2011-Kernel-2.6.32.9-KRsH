@@ -507,4 +507,36 @@ setusb()
     sync
 }
 
+checkals()
+{
+    sync
+    
+    if [ -e /data/als_disabled ]; then
+        echo "title=Enable ALS" > /tmp/alsstatus.prop
+        echo "text=Enable the Ambient Light Sensor for the ROM in this Slot" >> /tmp/alsstatus.prop
+        echo "task=enable" >> /tmp/alsstatus.prop
+    else
+        echo "title=Disable ALS" > /tmp/deasecstatus.prop
+        echo "text=Disable the Ambient Light Sensor for the ROM in this Slot" >> /tmp/alsstatus.prop
+        echo "task=disable" >> /tmp/alsstatus.prop
+    fi
+    
+    sync
+}
+
+setals()
+{
+    sync
+
+    if [ "$2" == "disable" ]; then
+        echo "1" > /data/als_disabled
+    fi
+
+    if [ "$2" == "enable" ]; then
+        rm -f /data/als_disabled
+    fi
+
+    sync
+}
+
 $1 $1 $2 $3 $4
