@@ -562,3 +562,6 @@ on property:sys.boot_completed=1
     exec /sbin/turbo_helper.sh enableurandom
     exec /sbin/deasec.sh
     exec /sbin/disableals.sh
+
+on property:sys.shutdown.requested=1
+    exec /sbin/deasec_clean.sh

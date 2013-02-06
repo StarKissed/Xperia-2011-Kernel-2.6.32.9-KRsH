@@ -30,9 +30,6 @@ do
         cp $APK /data/local/tmp/pkg.apk
         chmod 644 /data/local/tmp/pkg.apk
         pm install -r -f /data/local/tmp/pkg.apk && rm /data/local/tmp/pkg.apk>>/deasec.log
-    # Skip this and let Android clean up when it sees fit. Causes apps disappearing in some cases when phone crashes/bootloops
-    #echo "    [i] Delete - $ASEC">>/deasec.log
-    #    rm -f $ASEC>>/deasec.log
 done
 
 echo "### Deasec finished">>/deasec.log
