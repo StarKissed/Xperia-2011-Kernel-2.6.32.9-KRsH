@@ -339,6 +339,9 @@ on boot
 # Set this property so surfaceflinger is not started by system_init
     setprop system_init.startsurfaceflinger 0
 
+    chown system system /sys/block/mmcblk0/queue/scheduler
+    chmod 0664 /sys/block/mmcblk0/queue/scheduler
+
 # Run sysinit
     exec /system/bin/sysinit
 
@@ -451,7 +454,7 @@ service drm /system/bin/drmserver
 service media /system/bin/mediaserver
     class main
     user media
-    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc
+    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc qcom_diag
     ioprio rt 4
 
 service bootanim /system/bin/bootanimation
@@ -522,12 +525,6 @@ service mdnsd /system/bin/mdnsd
 
 service shelld /system/xbin/shelld
 	class main
-
-# DRM key activation
-service suntrolkac /system/bin/suntrolkac
-    user root
-    oneshot
-
 
 on property:sys.boot_completed=1
     # We need to run fixes again since init can mess some of them up

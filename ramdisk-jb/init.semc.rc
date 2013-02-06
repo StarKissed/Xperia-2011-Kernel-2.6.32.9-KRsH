@@ -3,7 +3,7 @@ import init.semc.usb.rc
 on early-boot
     #Run pre_hw_config.sh before entering charge only mode.
     exec /sbin/sh /system/etc/pre_hw_config.sh
-    #offline charing
+    #offline charging
     exec /system/bin/chargemon
 
 on post-fs-data
