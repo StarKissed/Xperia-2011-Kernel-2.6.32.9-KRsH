@@ -1,0 +1,18 @@
+#
+# ADDITIONAL_DEFAULT_PROPERTIES
+#
+ro.opengles.version=131072
+ro.secure=0
+ro.allow.mock.location=0
+ro.debuggable=1
+persist.sys.usb.config=mass_storage,adb
+#
+# VERSION_PROPERTIES
+#
+ro.semc.product.device=R800
+
+# Specify that device is both GSM/CDMA to get around CyanogenMod assert safety-checks
+# This if more than fine, since the installed ROM will override these
+ro.product.device=zeusc
+ro.build.product=zeus
+
