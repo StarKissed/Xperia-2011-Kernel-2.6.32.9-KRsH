@@ -5,4 +5,4 @@ fi
 
 ARCH=arm CROSS_COMPILE=/home/cosmicdan/android/android_prebuilt_toolchains/arm-eabi-linaro-4.7/bin/arm-eabi- make turbo_$1_defconfig
 #ARCH=arm CROSS_COMPILE=/home/cosmicdan/android/android_prebuilt_toolchains/arm-eabi-4.4.3/bin/arm-eabi- make turbo_$1_defconfig
-cp -r -f ./ramdisk___configs/$device/* ./ramdisk
+cp -r -f ./ramdisk___configs/$1/* ./ramdisk
