@@ -45,7 +45,7 @@ cd ..
 ./$MKBOOTFS ./ramdisk | lzma -6e -C crc32 > ramdisk.cpio.lzma
 #echo "[i] ramdisk.cpio.lzma built"
 
-./$MKBOOTIMG --base 0x00200000 --pagesize 32768 --kernel ./arch/arm/boot/zImage --ramdisk ramdisk.cpio.lzma -o boot.img
+./$MKBOOTIMG --base 0x00200000 --pagesize 131072 --kernel ./arch/arm/boot/zImage --ramdisk ramdisk.cpio.lzma -o boot.img
 #echo "[i] boot.img built"
 
 rm ramdisk.cpio.lzma
