@@ -531,4 +531,3 @@ on property:init.svc.bootanim=stopped
     exec /sbin/fixes.sh
     exec /sbin/turbo_helper.sh enableurandom
     exec /sbin/deasec.sh
-    exec /sbin/disableals.sh

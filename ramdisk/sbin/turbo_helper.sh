@@ -298,6 +298,8 @@ mountproc()
     echo "[TURBO] Running fixes/hacks script for specific ROM fixes..." >>/boot.log
     /sbin/fixes.sh
 
+    /sbin/disableals.sh
+
     echo "[TURBO] Stage 2 finished, continue standard Android boot. Bye!" >>/boot.log
     date >>/boot.log
     
@@ -532,7 +534,7 @@ checkals()
         echo "text=Enable the Ambient Light Sensor for the ROM in this Slot" >> /tmp/alsstatus.prop
         echo "task=enable" >> /tmp/alsstatus.prop
     else
-        echo "title=Disable ALS" > /tmp/deasecstatus.prop
+        echo "title=Disable ALS" > /tmp/alsstatus.prop
         echo "text=Disable the Ambient Light Sensor for the ROM in this Slot" >> /tmp/alsstatus.prop
         echo "task=disable" >> /tmp/alsstatus.prop
     fi
