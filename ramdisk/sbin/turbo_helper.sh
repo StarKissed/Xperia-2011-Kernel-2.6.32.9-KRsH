@@ -462,12 +462,12 @@ checkdeasec()
     sync
     
     if [ -e /data/deasec_enabled ]; then
-        echo "title=Disable Deasec" > /tmp/deasecstatus.prop
-        echo "text=Restore buggy asec function of Jellybean" >> /tmp/deasecstatus.prop
+        echo "title=Disable Deasec v2" > /tmp/deasecstatus.prop
+        echo "text=Restore the buggy and annoying asec package encyption of Jellybean" >> /tmp/deasecstatus.prop
         echo "task=disable" >> /tmp/deasecstatus.prop
     else
-        echo "title=Enable Deasec" > /tmp/deasecstatus.prop
-        echo "text=By Giovanni Aneloni. This will force ROM to decrypt any apps on startup." >> /tmp/deasecstatus.prop
+        echo "title=Enable Deasec v2" > /tmp/deasecstatus.prop
+        echo "text=By Giovanni Aneloni, enahnced by CosmicDan. This will force ROM to decrypt any apps on startup." >> /tmp/deasecstatus.prop
         echo "task=enable" >> /tmp/deasecstatus.prop
     fi
     

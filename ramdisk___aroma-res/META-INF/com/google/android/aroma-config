@@ -436,6 +436,9 @@ if prop("systemtask.prop","selected")=="5" then
     endif;
     
     if prop("tweaksmods.prop","selected")=="3" then
+        if file_getprop("/tmp/deasecstatus.prop","task")=="enable" then
+            alert("Notice","While Deasec is enabled, the system may quick-reboot after startup if any apps are decrypted. This is required to refresh the packagemanager and is normal.", "@android");
+        endif;
         exec("/sbin/turbo_helper.sh", "setdeasec", file_getprop("/tmp/deasecstatus.prop","task"));
     endif;
     
