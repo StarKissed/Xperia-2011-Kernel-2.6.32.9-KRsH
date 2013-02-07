@@ -4,6 +4,8 @@
 
 if [ -e /data/deasec_enabled ]; then
 
+sleep 10
+
 LD_LIBRARY_PATH="/system/lib"
 PATH="/system/xbin:/system/sbin:/system/bin"
 
@@ -25,11 +27,25 @@ do
 		chown -R system:system /data/data/$PKG/lib>>/deasec.log
 		chmod -R 755 /data/data/$PKG/lib>>/deasec.log
 	fi
+    
 	APK=$(pm path $PKG|cut -d':' -f2)
-	echo "    [i] New APK location - $APK">>/deasec.log
+	echo "    [i] APK - $APK">>/deasec.log
         cp $APK /data/local/tmp/pkg.apk
         chmod 644 /data/local/tmp/pkg.apk
         pm install -r -f /data/local/tmp/pkg.apk && rm /data/local/tmp/pkg.apk>>/deasec.log
+done
+
+echo "### Checking for dead ASEC containers...">>/deasec.log
+
+cd /data/app-asec/
+for ASEC in $(ls *.asec)
+do
+    PKG=$(basename $ASEC|cut -d'-' -f1)
+    PKG_PATH=`pm list packages -f | grep $PKG | sed "s/package://g" | sed "s/=$PKG//g"`
+    if [ "`dirname $PKG_PATH`" == "/data/app" ]; then
+        echo "    /data/app-asec/$ASEC is not longer in use. Deleting...">>/deasec.log
+        rm -rf /data/app-asec/$ASEC
+    fi
 done
 
 echo "### Deasec finished">>/deasec.log

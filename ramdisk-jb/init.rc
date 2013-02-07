@@ -526,12 +526,9 @@ service mdnsd /system/bin/mdnsd
 service shelld /system/xbin/shelld
 	class main
 
-on property:sys.boot_completed=1
+on property:init.svc.bootanim=stopped
     # We need to run fixes again since init can mess some of them up
     exec /sbin/fixes.sh
     exec /sbin/turbo_helper.sh enableurandom
     exec /sbin/deasec.sh
     exec /sbin/disableals.sh
-
-on property:sys.shutdown.requested=1
-    exec /sbin/deasec_clean.sh
