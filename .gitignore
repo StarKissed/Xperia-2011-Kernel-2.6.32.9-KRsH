@@ -52,7 +52,10 @@ ramdisk_fxp152/
 ramdisk_kxp/
 ramdisk_new/
 ramdisk_old/
+ramdisk/default.prop
+ramdisk/init.semc.usb.rc
 ramdisk/sbin/aroma-res.zip
+ramdisk/sbin/autowifi.sh
 ramdisk/sbin/ramdisk-cwm.cpio
 ramdisk/sbin/ramdisk-ics.cpio
 ramdisk/sbin/ramdisk-jb.cpio
