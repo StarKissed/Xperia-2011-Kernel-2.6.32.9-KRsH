@@ -223,7 +223,6 @@ if prop("systemselect.prop","selected")=="1" then
         "systemtask.prop",
             "Boot",                         "Boot " + getvar("slot1text") + " now",                                    "@slot1",
             getvar("rec") + " Recovery",    "Enter " + getvar("rec") + " Recovery now",                                getvar("recicon"),
-            "Fix Wifi",                     "Force a Wifi module install if you have issues",                          "@wifi",
             "Change Slot Mode",             "Current Slot Mode is " + file_getprop("/turbo/slot1mode.prop","mode"),    "@android",
             "Tweaks and Mods",              "Various things for your hacking pleasure",                                "@customize"
     );
@@ -241,7 +240,6 @@ if prop("systemselect.prop","selected")=="2" then
             "systemtask.prop",
                 "Boot",                         "Boot " + getvar("slot2text") + " now",                                    "@slot2",
                 getvar("rec") + " Recovery",    "Enter " + getvar("rec") + " Recovery now",                                getvar("recicon"),
-                "Fix Wifi",                     "Force a Wifi module install if you have issues",                          "@wifi",
                 "Change Slot Mode",             "Current Slot Mode is " + file_getprop("/turbo/slot2mode.prop","mode"),    "@android",
                 "Tweaks and Mods",              "Various things for your hacking pleasure",                                "@customize"
         );
@@ -260,7 +258,6 @@ if prop("systemselect.prop","selected")=="3" then
             "systemtask.prop",
                 "Boot",                         "Boot " + getvar("slot3text") + " now",                                    "@slot3",
                 getvar("rec") + " Recovery",    "Enter " + getvar("rec") + " Recovery now",                                getvar("recicon"),
-                "Fix Wifi",                     "Force a Wifi module install if you have issues",                          "@wifi",
                 "Change Slot Mode",             "Current Slot Mode is " + file_getprop("/turbo/slot3mode.prop","mode"),    "@android",
                 "Tweaks and Mods",              "Various things for your hacking pleasure",                                "@customize"
         );
@@ -279,7 +276,6 @@ if prop("systemselect.prop","selected")=="4" then
             "systemtask.prop",
                 "Boot",                         "Boot " + getvar("slot4text") + " now",                                    "@slot4",
                 getvar("rec") + " Recovery",    "Enter " + getvar("rec") + " Recovery now",                                getvar("recicon"),
-                "Fix Wifi",                     "Force a Wifi module install if you have issues",                          "@wifi",
                 "Change Slot Mode",             "Current Slot Mode is " + file_getprop("/turbo/slot4mode.prop","mode"),    "@android",
                 "Tweaks and Mods",              "Various things for your hacking pleasure",                                "@customize"
         );
@@ -311,26 +307,8 @@ if prop("systemtask.prop","selected")=="2" then
 endif;
 
 ##########
-# Wifi
-if prop("systemtask.prop","selected")=="3" then
-    pleasewait("Copying Wifi module to Slot " + getvar("currentslot") + " ...");
-    if getvar("currentslot")=="1" then
-        exec("mount","-t","yaffs2","/dev/block/mtdblock0","/system");
-    else
-        exec("mount", "-w", "-t", "ext2", "/turbo/system" + getvar("currentslot") + ".ext2.img", "/system");
-    endif;
-    exec("mkdir", "-p", "/system/lib/modules");
-    exec("cp", "-f", "/modules/bcm4329.ko", "/system/lib/modules/bcm4329.ko");
-    exec("chmod","664", "/system/lib/modules/bcm4329.ko");
-    exec("sync");
-    exec("umount", "/system");
-    alert("Fix Wifi","The Wifi module has been forcibly installed to Slot " + getvar("currentslot") + ".\n\nPress OK to return to the main menu.", "@cog");
-    back("999");
-endif;
-
-##########
 # Mode
-if prop("systemtask.prop","selected")=="4" then
+if prop("systemtask.prop","selected")=="3" then
     menubox(
         "Slot Mode",
         "Select the type of ROM that will be (or already is) installed to this slot. Currently set to " + file_getprop("/turbo/slot" + getvar("currentslot") + "mode.prop","mode") + ".",
@@ -353,7 +331,7 @@ endif;
 
 ##########
 # Tweaks
-if prop("systemtask.prop","selected")=="5" then
+if prop("systemtask.prop","selected")=="4" then
     exec("/sbin/turbo_helper.sh", "checktsdx", getvar("currentslot"));
     # above helper function will mount correct system/data partition
     exec("/sbin/turbo_helper.sh", "checkurandom");
