@@ -291,17 +291,21 @@ mountproc()
     if [ ! -L /system/vendor/pittpatt ]; then
         # link faceunlock data to SDCard
         echo "[TURBO] Linking Faceunlock data to SDCard..." >>/boot.log
+        mount -o remount,rw /system
         rm -rf /system/vendor/pittpatt
         mkdir -p /turbo/faceunlock
         ln -s /turbo/faceunlock /system/vendor/pittpatt
+        mount -o remount,ro /system
     fi
 
     if [ ! -L /system/usr/srec/en-US ]; then
         # Link Google Now voice files to SDCard
         echo "[TURBO] Linking Google Now voice data to SDCard..." >>/boot.log
+        mount -o remount,rw /system
         rm -rf /system/usr/srec/en-US
         mkdir -p /turbo/goolenow
         ln -s /turbo/goolenow /system/usr/srec/en-US
+        mount -o remount,ro /system
     fi
 
     echo "[TURBO] Relocating dalvik-cache to /data/dalvik-cache..." >>/boot.log
