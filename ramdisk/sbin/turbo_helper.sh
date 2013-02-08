@@ -8,6 +8,8 @@ checkmodel()
     model=`cat /default.prop | grep 'ro.product.device' | sed "s/ro.product.device=//g"`
     if [ "$model" == "zeus" ] || [ "$model" == "zeusc" ]; then
         echo "zeus"
+    else
+        echo $model
     fi
 }
 
