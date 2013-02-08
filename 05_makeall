@@ -1,8 +1,27 @@
-version=r13b2
+turbov='v2.1'
+sed -i 's/<text>Kernel .*<\/text>/<text>Kernel '$turbov'<\/text>/g' ./ramdisk-twrp/res/ui.xml
 
-# zeus/zeusc
-sed -i 's/CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=\"$(KERNEL_LOCAL_VERSION)-Turbo_'$version'\"/g' ./arch/arm/configs/turbo_zeus_defconfig
+# zeus/zeusc (Play)
+sed -i 's/CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=\"$(KERNEL_LOCAL_VERSION)-Turbo_'$turbov'\"/g' ./arch/arm/configs/turbo_zeus_defconfig
 ./01_makeconfig zeus
 ./03_makekernel
 ./04_makebootimg_bcm4329
-mv -f ./boot.img ./boot_zeus_turbo-r13b2.img
+mv -f ./boot.img ./boot_zeus_turbo-$turbov.img
+
+
+# phoenix (Neo L)
+sed -i 's/CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=\"$(KERNEL_LOCAL_VERSION)-Turbo_'$turbov'\"/g' ./arch/arm/configs/turbo_phoenix_defconfig
+./01_makeconfig phoenix
+./03_makekernel
+./04_makebootimg_bcm4329
+mv -f ./boot.img ./boot_phoenix_turbo-$turbov.img
+
+
+# ayame (Arc S)
+# NOT FINISHED YET
+#sed -i 's/CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=\"$(KERNEL_LOCAL_VERSION)-Turbo_'$turbov'\"/g' ./arch/arm/configs/turbo_ayame_defconfig
+#./01_makeconfig ayame
+#./03_makekernel
+#/bin/bash ./04_makebootimg_wl12xx
+#mv -f ./boot.img ./boot_ayame_turbo-$turbov.img
+
