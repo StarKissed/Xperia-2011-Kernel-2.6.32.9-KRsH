@@ -462,8 +462,8 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0x0
 CONFIG_ZBOOT_ROM_BSS=0x0
-CONFIG_CMDLINE="console=ttyMSM2,115200n8 androidboot.hardware=semc mtdparts=msm_nand:317440k@94720k(system),624128k@412160k(userdata),8192k@1036288k(cache),12800k@81920k(boot)"
-#CONFIG_CMDLINE="console=ttyMSM2,115200n8 androidboot.hardware=semc mtdparts=msm_nand:320000k@94720k(system),389120k@414720k(userdata),103936k@940544k(cache),12800k@81920k(boot),136704k@803840k(appslog)"
+CONFIG_CMDLINE="console=ttyMSM2,115200n8 androidboot.hardware=semc mtdparts=msm_nand:317440k@94720k(system),628224k@412160k(userdata),8192k@1040384k(cache),29184k@2048k(amss),13312k@31232k(amss_fs),13824k@44544k(adsp),11776k@58368k(fota0),11776k@70144k(fota1),12800k@81920k(boot)"
+# [Stock] CONFIG_CMDLINE="console=ttyMSM2,115200n8 androidboot.hardware=semc mtdparts=msm_nand:320000k@94720k(system),389120k@414720k(userdata),103936k@940544k(cache),136704k@803840k(appslog),29184k@2048k(amss),13312k@31232k(amss_fs),13824k@44544k(adsp),11776k@58368k(fota0),11776k@70144k(fota1),12800k@81920k(boot)"
 # CONFIG_XIP_KERNEL is not set
 # CONFIG_KEXEC is not set
 CONFIG_CRASH_NOTES=y
