@@ -1,0 +1,15 @@
+#
+# ADDITIONAL_DEFAULT_PROPERTIES
+#
+ro.opengles.version=131072
+ro.secure=0
+ro.allow.mock.location=0
+ro.debuggable=1
+persist.sys.usb.config=mass_storage,adb
+#
+# VERSION_PROPERTIES
+#
+ro.semc.product.device=MT25
+ro.product.device=phoenix
+ro.build.product=phoenix
+

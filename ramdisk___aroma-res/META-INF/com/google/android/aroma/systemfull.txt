@@ -1,0 +1,11 @@
+ROM boot has been blocked and must be solved.
+
+When you press Reboot, your device will automatically enter the Boot Menu. Then, perform these steps:
+<*>Enter Recovery for this Slot</*>
+<*>Format (wipe) system</*>
+<*>Install the ZIP of your ROM <b>but *not* Google Apps</b></*>
+<*>Reboot and ensure the ROM works</*>
+<*>Reboot again and install Google Apps from Recovery</*>
+
+If you get this message again after following the above steps, the ROM you have installed is too large. Please contact the ROM creator, or use a different ROM.
+

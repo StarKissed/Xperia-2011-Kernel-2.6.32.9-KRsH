@@ -42,24 +42,24 @@ fontresload( "1", "ttf/Comfortaa.ttf", "20" ); #-- big
 exec("/sbin/turbo_helper.sh", "checkmodel");
 if getvar("exec_buffer") == "zeus\n"; then
     calibrate("0.8939","43","0.9616","25");
-endif;    
+endif;
+if getvar("exec_buffer") == "phoenix\n"; then
+    calibrate("0.8939","43","0.9616","25");
+endif;
 
 ########################################
 ########################################
 
 if file_getprop("/tmp/systemfree.prop","safe") == "no";
 then
-    ini_set("text_next", "OK");
-    viewbox(
+    ini_set("text_next", "Reboot");
+    textbox(
         "Problem Detected",
-        "<b><#f55>Turbo Kernel has detected that your system partition is dangerously low on space.</#></b>\n\n"+
-        "This could be caused by installing a ROM that is too large for Turbo Kernel, or by installing a ZIP addon that is too large. Your ROM will probably have problems because this last update may not have completely installed.\n\n"+
-        "If you have just installed Google Apps, this may be the cause due to the large data from Faceunlock and/or Google Now offline voice files. Please refer to the thread for your ROM for details on obtaining a 'slim' or 'mini' Google Apps package.\n\n"+
-        "Press OK to continue booting. In order to clear this message, you must format /system and reinstall the ROM (and any update ZIP addons) from scratch - or manually remove the offending files.",
-        "@warning"
+        "<b><#f55>Turbo Kernel has detected that your system partition is over capacity.</#></b>",
+        "@warning",
+        resread("systemfull.txt")
     );
-    ini_set("force_colorspace", "argb");
-    pleasewait("Booting...");
+    pleasewait("Rebooting...");
     exit("");
 endif;
 

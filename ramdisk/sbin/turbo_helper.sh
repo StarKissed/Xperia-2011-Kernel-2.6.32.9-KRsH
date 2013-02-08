@@ -278,12 +278,32 @@ mountproc()
     
     # system free check
     systemfree=`df -m | grep '/system' | awk '{print $4}'`
-    if test $systemfree -lt 2; then 
+    if test $systemfree -lt 1; then 
         echo "safe=no" > /tmp/systemfree.prop
+        mkdir -p /cache/recovery
+        touch /cache/recovery/boot
         /sbin/aroma 1 0 "/sbin/aroma-res.zip"
+        umount -l /dev/block/mmcblk0p1
+        reboot
     fi
-    
-    
+
+    # gapps full hack
+    if [ ! -L /system/vendor/pittpatt ]; then
+        # link faceunlock data to SDCard
+        echo "[TURBO] Linking Faceunlock data to SDCard..." >>/boot.log
+        rm -rf /system/vendor/pittpatt
+        mkdir -p /turbo/faceunlock
+        ln -s /turbo/faceunlock /system/vendor/pittpatt
+    fi
+
+    if [ ! -L /system/usr/srec/en-US ]; then
+        # Link Google Now voice files to SDCard
+        echo "[TURBO] Linking Google Now voice data to SDCard..." >>/boot.log
+        rm -rf /system/usr/srec/en-US
+        mkdir -p /turbo/goolenow
+        ln -s /turbo/goolenow /system/usr/srec/en-US
+    fi
+
     echo "[TURBO] Relocating dalvik-cache to /data/dalvik-cache..." >>/boot.log
     mkdir /data/dalvik-cache>>/boot.log
         chown system:system /data/dalvik-cache>>/boot.log
