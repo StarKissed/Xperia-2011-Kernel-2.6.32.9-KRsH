@@ -187,6 +187,12 @@
 				<text>Kernel v2.0</text>
 			</object>
 
+            <object type="text" color="%text_color%">
+				<font resource="font-mini" />
+				<placement x="100" y="68" />
+				<text>Current Slot - ?</text>
+			</object>
+
 			<object type="text" color="%text_color%">
 				<font resource="font" />
 				<placement x="250" y="70" />

@@ -301,7 +301,8 @@ endif;
 # Recovery
 if prop("systemtask.prop","selected")=="2" then
         write("/tmp/bootrec","1");
-        write("/tmp/recslot", "FSTAB=/recovery" + getvar("currentslot") + ".fstab");
+        write("/tmp/recslot", "FSTAB=/recovery" + getvar("currentslot") + ".fstab" + "\n" +
+                              "CURRENTSLOT=" + getvar("currentslot"));
         exec("sync");
         exit("");
 endif;
