@@ -1,6 +1,6 @@
 ROM boot has been blocked and must be solved.
 
-When you press Reboot, your device will automatically enter the Boot Menu. Then, perform these steps:
+When you press Reboot, please press Vol-Down to enter the Boot Menu. Then, perform these steps:
 <*>Enter Recovery for this Slot</*>
 <*>Format (wipe) system</*>
 <*>Install the ZIP of your ROM <b>but *not* Google Apps</b></*>

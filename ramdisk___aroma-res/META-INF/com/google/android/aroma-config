@@ -31,7 +31,6 @@ ini_set("text_install", "Install");
 ini_set("text_apply", "Apply");
 ini_set("text_finish", "Finish");
 ini_set("text_none", "None");
-ini_set("force_colorspace","bgra");
 
 theme("cosmicui");
 
@@ -39,16 +38,47 @@ fontresload( "0", "ttf/Comfortaa.ttf", "14" ); #-- small
 fontresload( "1", "ttf/Comfortaa.ttf", "20" ); #-- big
 
 # calibration
-exec("/sbin/turbo_helper.sh", "checkmodel");
-if getvar("exec_buffer") == "zeus\n"; then
+if file_getprop("/default.prop","ro.product.device") == "zeus"; then
     calibrate("0.8939","43","0.9616","25");
+    setvar("calibrated", "true");
 endif;
-if getvar("exec_buffer") == "phoenix\n"; then
+if file_getprop("/default.prop","ro.product.device") == "zeusc"; then
     calibrate("0.8939","43","0.9616","25");
+    setvar("calibrated", "true");
+endif;
+if file_getprop("/default.prop","ro.product.device") == "phoenix"; then
+    calibrate("0.8939","43","0.9616","25");
+    setvar("calibrated", "true");
 endif;
 
 ########################################
 ########################################
+
+if file_getprop("/reboot_required","reboot_required") == "yes";
+then
+    ini_set("text_next", "OK");
+    viewbox(
+        "Stock ICS Notice",
+        "Turbo Kernel has detected a fresh installation of a stock ICS ROM.\n\n"+
+        "We need to change some pre-set settings in the ROM for proper functionality. Currently this includes:\n"+
+        " - Turning off Window/transition animations to solve display glitches\n\n"+
+        "<b><#f55>Your device will reboot once automatically when booted. Do not be alarmed, the ROM will be functional after the second boot.</#></b>",
+        "@cm10"
+    );
+    exit("");
+endif;
+
+ini_set("force_colorspace","bgra");
+
+if getvar("calibrated") != "true"; then
+    viewbox(
+        "Calibration Required",
+        "Your current device is alpha in Turbo Kernel, and as such requires calibration for Boot Menu touch.\n\n"+
+        "Please press 'Menu' then select 'Calibration' with Volume Up/Down keys and Home to select.\n\n"+
+        "<b><#f55>Please report your calibration values in the Turbo Kernel thread for your device so it can be added. Thank you!</#></b>",
+        "@warning"
+    );
+endif;
 
 if file_getprop("/tmp/systemfree.prop","safe") == "no";
 then
@@ -108,7 +138,6 @@ then
     exec("sync");
     exit("");
 endif;
-
 
 ########################################
 ########################################
@@ -316,7 +345,8 @@ if prop("systemtask.prop","selected")=="3" then
         "@android",
         "mode.prop",
             "JB-AOSP",          "Jellybean ROM's based on AOSP (Default)",                  "@jellyzeus",
-            "ICS-AOSP",         "Ice Cream Sandwich ROM's based on AOSP (e.g. CM9, AOKP)",  "@cm10"
+            "ICS-AOSP",         "Ice Cream Sandwich ROM's based on AOSP (e.g. CM9, AOKP)",  "@cm10",
+            "ICS-Stock",        "Ice Cream Sandwich ROM's based on Stock ICS",              "@cm10"
     );
     
     if prop("mode.prop","selected")=="1" then
@@ -327,7 +357,11 @@ if prop("systemtask.prop","selected")=="3" then
         write("/turbo/slot" + getvar("currentslot") + "mode.prop", "mode=ICS-AOSP\n");
     endif;
     
-    back("1");
+    if prop("mode.prop","selected")=="3" then
+        write("/turbo/slot" + getvar("currentslot") + "mode.prop", "mode=ICS-Stock\n");
+    endif;
+    
+    back("2");
 endif;
 
 ##########

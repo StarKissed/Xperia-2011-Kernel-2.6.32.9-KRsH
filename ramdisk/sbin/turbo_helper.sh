@@ -3,17 +3,6 @@
 #set -x
 #exec >>/turbo_helper.log 2>&1
 
-checkmodel()
-{
-    model=`cat /default.prop | grep 'ro.product.device' | sed "s/ro.product.device=//g"`
-    if [ "$model" == "zeus" ] || [ "$model" == "zeusc" ]; then
-        echo "zeus"
-    else
-        echo $model
-    fi
-}
-
-
 checkfresh()
 {
     if [ ! -e /turbo/version ]; then
@@ -149,19 +138,19 @@ mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandlin
         mount -t ext2   -o rw                        /dev/block/loop0    /system >>/boot.log
         mount -t ext2   -o ro,remount                /dev/block/loop0    /system >>/boot.log
         mount -t ext2   -o rw,noatime,nosuid,nodev   /dev/block/loop1    /data >>/boot.log
-        systemloop=`losetup | grep '/turbo/system$1.ext2.img' | awk '{print $1}' | sed -e 's/:$//'`
-        systemmount=`mount | grep $systemloop | awk '{print $3}'`
-        dataloop=`losetup | grep '/turbo/userdata$1.ext2.img' | awk '{print $1}' | sed -e 's/:$//'`
-        datamount=`mount | grep $dataloop | awk '{print $3}'`
+        systemloop=`losetup | grep '/turbo/system'$1'.ext2.img' | awk '{print \$1}' | sed -e 's/:$//'`
+        systemmount=`mount | grep $systemloop | awk '{print \$3}'`
+        dataloop=`losetup | grep '/turbo/userdata'$1'.ext2.img' | awk '{print \$1}' | sed -e 's/:$//'`
+        datamount=`mount | grep -m 1 $dataloop | awk '{print \$3}'`
         if [ "$systemmount" == "/system" ]; then
-            echo "[TURBO] /turbo/system$1.ext2.img mounted on /system via $systemloop" >>/boot.log
+            echo "[TURBO] /turbo/system$1.ext2.img mounted on /system via $systemloop"
         else
-            echo "[TURBO] Problem mounting /turbo/system$1.ext2.img to /system!" >>/boot.log
+            echo "[TURBO] Problem mounting /turbo/system$1.ext2.img to /system!"
         fi
         if [ "$datamount" == "/data" ]; then
-            echo "[TURBO] /turbo/userdata$1.ext2.img mounted on /data via $dataloop" >>/boot.log
+            echo "[TURBO] /turbo/userdata$1.ext2.img mounted on /data via $dataloop"
         else
-            echo "[TURBO] Problem mounting /turbo/userdata$1.ext2.img to /data!" >>/boot.log
+            echo "[TURBO] Problem mounting /turbo/userdata$1.ext2.img to /data!"
         fi
     fi
     
@@ -284,10 +273,8 @@ mountproc()
     systemfree=`df -m | grep '/system' | awk '{print $4}'`
     if test $systemfree -lt 1; then 
         echo "safe=no" > /tmp/systemfree.prop
-        mkdir -p /cache/recovery
-        touch /cache/recovery/boot
         /sbin/aroma 1 0 "/sbin/aroma-res.zip"
-        umount -l /dev/block/mmcblk0p1
+        sync
         reboot
     fi
 
