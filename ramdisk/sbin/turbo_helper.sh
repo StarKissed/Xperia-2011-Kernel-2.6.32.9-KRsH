@@ -60,10 +60,12 @@ moveoldimages()
 
 clearslot()
 {
-    echo "icon=@slot$2" > /turbo/slot$2.prop
-    echo "text=Slot $2" >> /turbo/slot$2.prop
-    echo "custom=true" >> /turbo/slot$2.prop
-    echo "mode=JB-AOSP" >> /turbo/slot$2.prop
+    rm -f '/turbo/system'$2'.ext2.img'
+    rm -f '/turbo/userdata'$2'.ext2.img'
+    echo "icon=@slot$2" > '/turbo/slot'$2'.prop'
+    echo "text=Slot $2" >> '/turbo/slot'$2'.prop'
+    echo "custom=true" >> '/turbo/slot'$2'.prop'
+    echo "mode=JB-AOSP" > '/turbo/slot'$2'mode.prop'
 }
 
 

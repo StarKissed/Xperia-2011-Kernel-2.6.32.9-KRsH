@@ -701,8 +701,6 @@ endif;
             );
         endif;
         
-        exec("rm", "-f", "/turbo/system" + prop("slotdelete.prop","selected") + ".ext2.img");
-        exec("rm", "-f", "/turbo/userdata" + prop("slotdelete.prop","selected") + ".ext2.img");
         exec("/sbin/turbo_helper.sh", "clearslot", prop("slotdelete.prop","selected"));
         
         setvar("slot1icon",    file_getprop("/turbo/slot1.prop","icon"));
