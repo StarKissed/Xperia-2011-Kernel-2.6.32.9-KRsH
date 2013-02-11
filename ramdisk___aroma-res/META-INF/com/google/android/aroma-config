@@ -788,9 +788,36 @@ setvar("exec_buffer", "");
 exec("/sbin/turbo_helper.sh", "checkslot", getvar("currentslot"));
 if getvar("exec_buffer") == "1\n"
 then
+    menubox(
+        "Slot Mode",
+        "This slot is empty and must be set up. Select the type of ROM that you plan to install to this slot. This can always be changed later.",
+        "@android",
+        "mode.prop",
+            "JB-AOSP",          "Jellybean ROM's based on AOSP (Default)",                  "@jellyzeus",
+            "ICS-AOSP",         "Ice Cream Sandwich ROM's based on AOSP (e.g. CM9, AOKP)",  "@cm10",
+            "ICS-Stock",        "Ice Cream Sandwich ROM's based on Stock ICS",              "@ics",
+            "GB-Stock",         "Gingerbread ROM's based on stock firmware",                "@gb"
+    );
+
+    if prop("mode.prop","selected")=="1" then
+        write("/turbo/slot" + getvar("currentslot") + "mode.prop", "mode=JB-AOSP\n");
+    endif;
+
+    if prop("mode.prop","selected")=="2" then
+        write("/turbo/slot" + getvar("currentslot") + "mode.prop", "mode=ICS-AOSP\n");
+    endif;
+
+    if prop("mode.prop","selected")=="3" then
+        write("/turbo/slot" + getvar("currentslot") + "mode.prop", "mode=ICS-Stock\n");
+    endif;
+
+    if prop("mode.prop","selected")=="4" then
+        write("/turbo/slot" + getvar("currentslot") + "mode.prop", "mode=GB-Stock\n");
+    endif;
+
     selectbox(
         "Slot " + getvar("currentslot") + " is empty",
-        "This slot is empty and must be set up. On the next page you will be able to select custom sizes.",
+        "Configure how the ext2 images for this slot will be created. On the next page you will be able to select custom sizes.",
         "@disk",
         "slottask.prop",
         "System",             "",                                                                    2,   # selected.1
@@ -910,7 +937,7 @@ then
         "<b>Turbo Kernel</b> is now performing the slot creation.",
         "@cog",
         "All done! You can now boot and/or perform Recovery tasks on this slot.\n\n"+
-        "<b>If you are not installing a Jellybean ROM in this Slot, be *sure* to change the Mode in the Slot Menu.</b>"
+        "If you want to customize the icon and text from presets included in Turbo Kernel, select 'Customize' from the Tools menu."
     );
     pleasewait("Synchronizing... WAIT!");
     exec("sync");
