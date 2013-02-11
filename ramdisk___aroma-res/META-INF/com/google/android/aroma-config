@@ -38,15 +38,11 @@ fontresload( "0", "ttf/Comfortaa.ttf", "14" ); #-- small
 fontresload( "1", "ttf/Comfortaa.ttf", "20" ); #-- big
 
 # calibration
-if file_getprop("/default.prop","ro.product.device") == "zeus"; then
+if file_getprop("/default.prop", "ro.semc.product.device") == "R800"; then
     calibrate("0.8939","43","0.9616","25");
     setvar("calibrated", "true");
 endif;
-if file_getprop("/default.prop","ro.product.device") == "zeusc"; then
-    calibrate("0.8939","43","0.9616","25");
-    setvar("calibrated", "true");
-endif;
-if file_getprop("/default.prop","ro.product.device") == "phoenix"; then
+if file_getprop("/default.prop", "ro.semc.product.device") == "MT25"; then
     calibrate("0.8939","43","0.9616","25");
     setvar("calibrated", "true");
 endif;
