@@ -35,6 +35,9 @@ cd ..
 ./$MKBOOTFS ./ramdisk-ics > ramdisk/sbin/ramdisk-ics.cpio
 #echo "[i] ramdisk-ics.cpio built"
 
+./$MKBOOTFS ./ramdisk-ics-stock > ramdisk/sbin/ramdisk-ics-stock.cpio
+#echo "[i] ramdisk-ics.cpio built"
+
 ./$MKBOOTFS ./ramdisk-twrp > ramdisk/sbin/ramdisk-twrp.cpio
 #echo "[i] ramdisk-twrp.cpio built"
 
