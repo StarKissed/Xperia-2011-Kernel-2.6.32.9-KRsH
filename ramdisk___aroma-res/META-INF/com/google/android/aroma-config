@@ -63,7 +63,7 @@ then
         "We need to change some pre-set settings in the ROM for proper functionality. Currently this includes:\n"+
         " - Turning off Window/transition animations to solve display glitches\n\n"+
         "<b><#f55>Your device will reboot once automatically when booted. Do not be alarmed, the ROM will be functional after the second boot.</#></b>",
-        "@cm10"
+        "@ics"
     );
     exit("");
 endif;
@@ -346,21 +346,26 @@ if prop("systemtask.prop","selected")=="3" then
         "mode.prop",
             "JB-AOSP",          "Jellybean ROM's based on AOSP (Default)",                  "@jellyzeus",
             "ICS-AOSP",         "Ice Cream Sandwich ROM's based on AOSP (e.g. CM9, AOKP)",  "@cm10",
-            "ICS-Stock",        "Ice Cream Sandwich ROM's based on Stock ICS",              "@cm10"
+            "ICS-Stock",        "Ice Cream Sandwich ROM's based on Stock ICS",              "@ics",
+            "GB-Stock",         "Gingerbread ROM's based on stock firmware",                "@gb"
     );
-    
+
     if prop("mode.prop","selected")=="1" then
         write("/turbo/slot" + getvar("currentslot") + "mode.prop", "mode=JB-AOSP\n");
     endif;
-    
+
     if prop("mode.prop","selected")=="2" then
         write("/turbo/slot" + getvar("currentslot") + "mode.prop", "mode=ICS-AOSP\n");
     endif;
-    
+
     if prop("mode.prop","selected")=="3" then
         write("/turbo/slot" + getvar("currentslot") + "mode.prop", "mode=ICS-Stock\n");
     endif;
-    
+
+    if prop("mode.prop","selected")=="4" then
+        write("/turbo/slot" + getvar("currentslot") + "mode.prop", "mode=GB-Stock\n");
+    endif;
+
     back("2");
 endif;
 

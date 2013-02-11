@@ -193,6 +193,11 @@ else
         busybox echo 0 > /sys/module/msm_fb/parameters/align_buffer
         load_image=/sbin/ramdisk-ics-stock.cpio
         busybox echo '[TURBO] Mode is ICS-Stock' >>boot.log
+    elif [ "$mode" == "GB-Stock" ]
+    then
+        busybox echo 0 > /sys/module/msm_fb/parameters/align_buffer
+        load_image=/sbin/ramdisk-gb-stock.cpio
+        busybox echo '[TURBO] Mode is GB-Stock' >>boot.log
     else
         busybox echo '[TURBO] Error - mode ('$mode') is not valid! Entering Recovery.' >>boot.log
         busybox echo 0 > /sys/module/msm_fb/parameters/align_buffer
