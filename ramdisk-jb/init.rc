@@ -199,7 +199,7 @@ on post-fs-data
 	chown system system /data/dalvik-cache
 	chmod 0771 /data/dalvik-cache
 
-	#ln -s /data/dalvik-cache /cache/dalvik-cache
+	mkdir /cache/dalvik-cache 0771 system system
 	chown system system /cache/dalvik-cache
 	chmod 0771 /cache/dalvik-cache
 
@@ -314,7 +314,7 @@ on boot
 
 # Define TCP buffer sizes for various networks
 #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
-    setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
+    setprop net.tcp.buffersize.default 4096,87380,704512,4096,16384,110208
     setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
     setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
     setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
