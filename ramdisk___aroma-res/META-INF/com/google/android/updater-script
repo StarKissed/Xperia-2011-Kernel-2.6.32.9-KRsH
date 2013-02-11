@@ -105,63 +105,63 @@ if file_getprop("/tmp/aroma/repairdo.prop","do") == "yes" then
         ui_print("Scanning /system for Slot 2 and repairing...");
         run_program("/sbin/busybox", "sh", "/sbin/repair_helper.sh", "repairslot", "2", "system");
         ui_print(" ");
-        set_progress(0.40);
+        set_progress(0.35);
     endif;
 
     if file_getprop("/tmp/aroma/repairtasks.prop","item.3.2") == "1" then
         ui_print("Scanning /data for Slot 2 and repairing...");
         run_program("/sbin/busybox", "sh", "/sbin/repair_helper.sh", "repairslot", "2", "userdata");
         ui_print(" ");
-        set_progress(0.60);
+        set_progress(0.40);
     endif;
 
     if file_getprop("/tmp/aroma/repairtasks.prop","item.4.1") == "1" then
         ui_print("Scanning /system for Slot 3 and repairing...");
         run_program("/sbin/busybox", "sh", "/sbin/repair_helper.sh", "repairslot", "3", "system");
         ui_print(" ");
-        set_progress(0.70);
+        set_progress(0.45);
     endif;
 
     if file_getprop("/tmp/aroma/repairtasks.prop","item.4.2") == "1" then
         ui_print("Scanning /data for Slot 3 and repairing...");
         run_program("/sbin/busybox", "sh", "/sbin/repair_helper.sh", "repairslot", "3", "userdata");
         ui_print(" ");
-        set_progress(0.90);
+        set_progress(0.50);
     endif;
     
     if file_getprop("/tmp/aroma/repairtasks.prop","item.5.1") == "1" then
         ui_print("Scanning /system for Slot 4 and repairing...");
         run_program("/sbin/busybox", "sh", "/sbin/repair_helper.sh", "repairslot", "4", "system");
         ui_print(" ");
-        set_progress(0.70);
+        set_progress(0.55);
     endif;
 
     if file_getprop("/tmp/aroma/repairtasks.prop","item.5.2") == "1" then
         ui_print("Scanning /data for Slot 4 and repairing...");
         run_program("/sbin/busybox", "sh", "/sbin/repair_helper.sh", "repairslot", "4", "userdata");
         ui_print(" ");
-        set_progress(0.90);
+        set_progress(0.60);
     endif;
 
     if file_getprop("/tmp/aroma/repairtasks.prop","item.1.1") == "1" then
         ui_print("Fixing permissions on internal /data...");
         run_program("/sbin/busybox", "sh", "/sbin/repair_helper.sh", "fixpermissions", "1");
         ui_print(" ");
-        set_progress(0.93);
+        set_progress(0.70);
     endif;
 
     if file_getprop("/tmp/aroma/repairtasks.prop","item.3.3") == "1" then
         ui_print("Fixing permissions on Slot 2 /data...");
         run_program("/sbin/busybox", "sh", "/sbin/repair_helper.sh", "fixpermissions", "2");
         ui_print(" ");
-        set_progress(0.96);
+        set_progress(0.80);
     endif;
 
     if file_getprop("/tmp/aroma/repairtasks.prop","item.4.3") == "1" then
         ui_print("Fixing permissions on Slot 3 /data...");
         run_program("/sbin/busybox", "sh", "/sbin/repair_helper.sh", "fixpermissions", "3");
         ui_print(" ");
-        set_progress(0.99);
+        set_progress(0.90);
     endif;
     
     if file_getprop("/tmp/aroma/repairtasks.prop","item.5.3") == "1" then
