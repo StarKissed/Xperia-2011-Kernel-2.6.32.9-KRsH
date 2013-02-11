@@ -222,7 +222,7 @@ on post-fs-data
     #setprop vold.post_fs_data_done 1
 
 # Include extra init file
-    import /init.cm.rc
+    import /system/etc/init.local.rc
 
 on boot
 # basic network init
@@ -523,8 +523,15 @@ service mdnsd /system/bin/mdnsd
     disabled
     oneshot
 
+# MIUI support
 service shelld /system/xbin/shelld
 	class main
+
+# DRM key activation
+service suntrolkac /system/bin/suntrolkac
+    user root
+    oneshot
+
 
 on property:init.svc.bootanim=stopped
     # We need to run fixes again since init can mess some of them up
