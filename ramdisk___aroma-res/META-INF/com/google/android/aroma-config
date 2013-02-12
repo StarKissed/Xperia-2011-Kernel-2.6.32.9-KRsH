@@ -656,9 +656,12 @@ endif;
             "Turbo UI",    "Boot Turbo UI in Slot "        + prop("systemcustomize.prop","selected"),    "@turbo",
             "SlimBean",    "Boot SlimBean in Slot "        + prop("systemcustomize.prop","selected"),    "@slimbean",
             "P.A.C. Man",  "Boot P.A.C. Man in Slot "      + prop("systemcustomize.prop","selected"),    "@pac",
-            "Jellyzeus",   "Boot Jellyzeus in Slot "       + prop("systemcustomize.prop","selected"),    "@jellyzeus",
+            "Jellyzeus",   "Boot Jellybean in Slot "       + prop("systemcustomize.prop","selected"),    "@jellyzeus",
             "CyanogenMod", "Boot CyanogenMod in Slot "     + prop("systemcustomize.prop","selected"),    "@cm10",
-            "None/Other",  "Slot "                         + prop("systemcustomize.prop","selected"),    "@slot1"
+            "MIUI",        "Boot MIUI in Slot "            + prop("systemcustomize.prop","selected"),    "@miui",
+            "Stock ICS",   "Boot Stock ICS in Slot "       + prop("systemcustomize.prop","selected"),    "@ics",
+            "Stock GB",    "Boot Stock GB in Slot "        + prop("systemcustomize.prop","selected"),    "@gb",
+            "None/Other",  "Slot "                         + prop("systemcustomize.prop","selected"),    "@slot" + prop("systemcustomize.prop","selected")
         );
         
         if prop("slotcustomizeentry.prop","selected")=="1" then
@@ -693,7 +696,25 @@ endif;
         endif;
         if prop("slotcustomizeentry.prop","selected")=="6" then
             write("/turbo/slot" + prop("systemcustomize.prop","selected") + ".prop", 
-                "icon=@slot1\n"+
+                "icon=@miui\n"+
+                "text=MIUI in Slot " + prop("systemcustomize.prop","selected") + "\n"
+            );
+        endif;
+        if prop("slotcustomizeentry.prop","selected")=="7" then
+            write("/turbo/slot" + prop("systemcustomize.prop","selected") + ".prop", 
+                "icon=@ics\n"+
+                "text=Stock ICS in Slot " + prop("systemcustomize.prop","selected") + "\n"
+            );
+        endif;
+        if prop("slotcustomizeentry.prop","selected")=="8" then
+            write("/turbo/slot" + prop("systemcustomize.prop","selected") + ".prop", 
+                "icon=@gb\n"+
+                "text=Stock GB in Slot " + prop("systemcustomize.prop","selected") + "\n"
+            );
+        endif;
+        if prop("slotcustomizeentry.prop","selected")=="9" then
+            write("/turbo/slot" + prop("systemcustomize.prop","selected") + ".prop", 
+                "icon=@slot" + prop("systemcustomize.prop","selected") + "\n"+
                 "text=Slot " + prop("systemcustomize.prop","selected") + "\n"
             );
         endif;
