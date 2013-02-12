@@ -184,7 +184,7 @@
 			<object type="text" color="%text_color%">
 				<font resource="font-mini" />
 				<placement x="385" y="68" />
-				<text>Kernel v2.0</text>
+				<text>Kernel v3.0b1</text>
 			</object>
 
             <object type="text" color="%text_color%">
@@ -2299,6 +2299,16 @@
 					<action function="set">tw_complete_text1=Rebooting...</action>
 					<action function="set">tw_slider_text=Swipe to Reboot</action>
 					<action function="page">rebootcheck</action>
+				</actions>
+			</object>
+            
+            <object type="button">
+				<placement x="%col2_x%" y="%row3_y%" />
+				<font resource="font" color="%button_text_color%" />
+				<text>Return to Boot Menu</text>
+				<image resource="main_button" />
+				<actions>
+					<action function="reboot">bootmenu</action>
 				</actions>
 			</object>
 

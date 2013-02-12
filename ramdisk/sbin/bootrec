@@ -2,6 +2,10 @@
 
 # start aroma bootmenu
 source /sbin/bootrec-device
+busybox sync
+busybox umount -l /dev/block/mmcblk0p1
+busybox umount -l /dev/block/mmcblk0p2
+busybox umount -l /cache
 busybox mount -t yaffs2 $BOOTREC_CACHE /cache
 busybox mkdir /sdcard
 busybox mount -o errors=remount-ro /dev/block/mmcblk0p1 /sdcard
@@ -12,6 +16,8 @@ busybox mkdir /tmp
 busybox echo 0 > $BOOTREC_LED_RED
 busybox echo 0 > $BOOTREC_LED_GREEN
 busybox echo 0 > $BOOTREC_LED_BLUE
+busybox sync
+kill `pidof recovery`
 /sbin/aroma 1 0 "/sbin/aroma-res.zip"
 # copy repair log to sdcard if requested
 if [ -e /tmp/turbo_repair.ready2copy ]; then
@@ -27,8 +33,14 @@ if [ -e /tmp/bootrec ]; then
         sed -i 's/<text>Current Slot -.*<\/text>/<text>Current Slot - '$CURRENTSLOT'<\/text>/g' /res/ui.xml
     fi
     /sbin/recovery
+    if [ -e /tmp/bootmenu ]; then
+        rm /tmp/bootmenu
+        /sbin/sh /sbin/bootrec
+    fi
+else
+    busybox sync
+    busybox umount -l /dev/block/mmcblk0p1
+    busybox umount -l /dev/block/mmcblk0p2
+    busybox umount -l /cache
+    reboot
 fi
-busybox sync
-busybox umount -l /dev/block/mmcblk0p1
-busybox umount -l /dev/block/mmcblk0p2
-reboot
