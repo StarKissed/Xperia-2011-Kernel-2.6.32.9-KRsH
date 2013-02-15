@@ -30,7 +30,7 @@ if [ -e /tmp/bootrec ]; then
     busybox cp -f $FSTAB /etc/recovery.fstab
     if [ -e /res/ui.xml ]; then
         # add current slot # to TWRP header
-        sed -i 's/<text>Current Slot -.*<\/text>/<text>Current Slot - '$CURRENTSLOT'<\/text>/g' /res/ui.xml
+        sed -i "s/<text>Current Slot -.*<\/text>/<text>$CURRENTSLOT<\/text>/g" /res/ui.xml
     fi
     /sbin/recovery
     if [ -e /tmp/bootmenu ]; then

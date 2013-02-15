@@ -327,7 +327,7 @@ endif;
 if prop("systemtask.prop","selected")=="2" then
         write("/tmp/bootrec","1");
         write("/tmp/recslot", "FSTAB=/recovery" + getvar("currentslot") + ".fstab" + "\n" +
-                              "CURRENTSLOT=" + getvar("currentslot"));
+                              "CURRENTSLOT='" + file_getprop("/turbo/slot" + getvar("currentslot") + ".prop","text")+ "'\n");
         exec("sync");
         exit("");
 endif;
