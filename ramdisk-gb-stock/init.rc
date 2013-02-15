@@ -1,5 +1,3 @@
-import /init.semc.usb.rc
-
 on early-init
     start ueventd
 
@@ -102,16 +100,6 @@ on init
     chmod 0777 /dev/cpuctl/bg_non_interactive/tasks
     # 5.0 %
     write /dev/cpuctl/bg_non_interactive/cpu.shares 52
-    
-    #usb fixes
-    write /sys/class/android_usb/android0/enable 0
-    write /sys/class/android_usb/android0/idVendor 0fce
-    write /sys/class/android_usb/android0/idProduct 615d
-    write /sys/class/android_usb/android0/functions mass_storage,adb
-    write /sys/class/android_usb/android0/iManufacturer ${ro.product.manufacturer}
-    write /sys/class/android_usb/android0/iProduct ${ro.product.model}
-    write /sys/class/android_usb/android0/iSerial ${ro.serialno}
-    write /sys/class/android_usb/android0/enable 1
 
 on early-fs
     mount rootfs rootfs / ro remount
