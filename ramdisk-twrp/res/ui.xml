@@ -184,7 +184,7 @@
 			<object type="text" color="%text_color%">
 				<font resource="font-mini" />
 				<placement x="385" y="68" />
-				<text>Kernel v3.0b1</text>
+				<text>Kernel v3.0</text>
 			</object>
 
             <object type="text" color="%text_color%">

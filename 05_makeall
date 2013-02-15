@@ -1,4 +1,4 @@
-turbov='v3.0b1'
+turbov='v3.0'
 sed -i 's/<text>Kernel .*<\/text>/<text>Kernel '$turbov'<\/text>/g' ./ramdisk-twrp/res/ui.xml
 
 # zeus/zeusc (Play)

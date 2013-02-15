@@ -12,7 +12,6 @@ persist.service.adb.enable=1
 #
 ro.semc.product.device=MT25
 ro.product.manufacturer=SEMC
-ro.product.model=Xperia Neo L
 ro.product.device=phoenix
 ro.build.product=phoenix
 

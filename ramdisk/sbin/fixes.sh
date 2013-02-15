@@ -49,6 +49,11 @@ if [ -e /turbo_stock-ics ]; then
     fi
 fi
 
+if [ -e /turbo_stock-gb ]; then
+    echo "`getprop ro.product.manufacturer`" > /sys/class/android_usb/android0/iManufacturer
+    echo "`getprop ro.semc.product.device`" > /sys/class/android_usb/android0/iProduct
+fi
+
 sleep 1
 sync
 
