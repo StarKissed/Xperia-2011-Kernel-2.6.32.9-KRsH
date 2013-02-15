@@ -1,7 +1,7 @@
 #!/sbin/sh
 
 #set -x
-#exec >>/turbo_helper.log 2>&1
+#exec >>/boot.log 2>&1
 
 checkfresh()
 {
@@ -125,7 +125,7 @@ copyimage()
 }
 
 
-mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandline)
+mounter() # INTERNAL (parameters start at $1, i.e don't ever call from commandline)
 {
     if  [ "$1" == "1" ]; then
         echo "[TURBO] No need to remount Slot 1" >>/boot.log
@@ -186,19 +186,21 @@ mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandlin
                 busybox echo 200 > $BOOTREC_LED_RED
                 busybox echo 200 > $BOOTREC_LED_GREEN
                 busybox echo 200 > $BOOTREC_LED_BLUE
+                if [ ! -d /sd-ext/$f ]; then
+                    # folder not exists yet, create it
+                    echo "[TSDX] Creating /sd-ext/$f" >>/boot.log
+                    mkdir -p /sd-ext/$f
+                    chmod 777 /sd-ext/$f
+                fi
                 if [ -d /data/$f ]; then
                     # folder exists, move it
                     echo "[TSDX] Moving /data/$f to /sd-ext/$f" >>/boot.log
-                    mv -f /data/$f /sd-ext/$f
+                    cp -a /data/$f/* /sd-ext/$f/ >>/boot.log
+                    rm -rf /data/$f >>/boot.log
                 fi
                 busybox echo 0 > $BOOTREC_LED_RED
                 busybox echo 0 > $BOOTREC_LED_GREEN
                 busybox echo 0 > $BOOTREC_LED_BLUE
-                if [ ! -d /sd-ext/$f ]; then
-                    # folder not exists yet (empty on internal), create it
-                    echo "[TSDX] Creating /sd-ext/$f" >>/boot.log
-                    mkdir -p /sd-ext/$f
-                fi
                 # link it
                 echo "[TSDX] Linking /data/$f to /sd-ext/$f" >>/boot.log
                 ln -s /sd-ext/$f /data/$f
@@ -211,8 +213,13 @@ mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandlin
                 busybox echo 200 > $BOOTREC_LED_RED
                 busybox echo 200 > $BOOTREC_LED_GREEN
                 busybox echo 200 > $BOOTREC_LED_BLUE
+                if [ -d /sd-ext/system_slot$1 ]; then
+                    echo "[TSDX] Removing old /sd-ext/system_slot$1 from sd-ext..." >>/boot.log
+                    rm -rf /sd-ext/system_slot$1
+                fi
                 echo "[TSDX] Moving /data/system to /sd-ext/system_slot$1" >>/boot.log
-                mv /data/system /sd-ext/system_slot$1
+                cp -a /data/system/* /sd-ext/system_slot$1/ >>/boot.log
+                rm -rf /data/system >>/boot.log
                 busybox echo 0 > $BOOTREC_LED_RED
                 busybox echo 0 > $BOOTREC_LED_GREEN
                 busybox echo 0 > $BOOTREC_LED_BLUE
@@ -223,6 +230,10 @@ mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandlin
         fi
     fi
     
+    if [ -e /data/tsdx/enabled ] && [ ! -d /data/data ]; then
+        echo "[TSDX] Skipping TSDX on fresh boot..." >>/boot.log
+    fi
+
     sync
 }
 
