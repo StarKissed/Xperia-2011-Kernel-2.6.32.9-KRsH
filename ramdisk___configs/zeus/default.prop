@@ -11,9 +11,10 @@ persist.service.adb.enable=1
 # VERSION_PROPERTIES
 #
 ro.semc.product.device=R800
+ro.product.manufacturer=SEMC
+ro.product.model=Xperia Play
 
 # Specify that device is both GSM/CDMA to get around CyanogenMod assert safety-checks
 # This if more than fine, since the installed ROM will override these
 ro.product.device=zeusc
 ro.build.product=zeus
-
