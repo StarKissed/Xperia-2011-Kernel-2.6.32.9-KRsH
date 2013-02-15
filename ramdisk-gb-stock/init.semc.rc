@@ -129,7 +129,12 @@ on boot
     #install bcm4329 module if needed
     exec /sbin/sh /sbin/autowifi.sh
 
-    # usb
+    # usb fixes
+    mkdir /dev/bus 0771 system system
+    mkdir /dev/bus/usb 0771 system system
+    chmod 0660 /sys/devices/platform/msm_hsusb/gadget/lun1/file
+    chown usb usb /sys/devices/platform/msm_hsusb/gadget/lun1/file
+    
     exec /system/bin/usbeng
 
     # Default tcp buffersizes for hsdpa
