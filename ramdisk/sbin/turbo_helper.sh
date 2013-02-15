@@ -182,14 +182,14 @@ mounter() # INTERNAL (parameter start at $1, i.e don't ever call from commandlin
         fi
         for f in app app-asec app_s app-private framework_s lib_s; do
             if [ ! -h /data/$f ]; then
+                # /data/$f not linked yet
                 busybox echo 200 > $BOOTREC_LED_RED
                 busybox echo 200 > $BOOTREC_LED_GREEN
                 busybox echo 200 > $BOOTREC_LED_BLUE
-                # /data/$f not linked yet
                 if [ -d /data/$f ]; then
                     # folder exists, move it
                     echo "[TSDX] Moving /data/$f to /sd-ext/$f" >>/boot.log
-                    mv /data/$f /sd-ext/$f
+                    mv -f /data/$f /sd-ext/$f
                 fi
                 busybox echo 0 > $BOOTREC_LED_RED
                 busybox echo 0 > $BOOTREC_LED_GREEN
