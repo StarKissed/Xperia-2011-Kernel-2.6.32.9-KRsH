@@ -1,20 +1,11 @@
+on early-init
+    # start fota
+    exec /sbin/fotainit
+
 on early-fs
     # Get potential ram dump from cache partition before it's needed
     # by the system.
     exec /sbin/grabramdump
-
-on early-init
-    # start fota
-    exec /sbin/fotainit
-    #SD Card support
-    export EXTERNAL_STORAGE /mnt/sdcard
-    mkdir /mnt/sdcard 0000 system system
-    # for backwards compatibility
-    symlink /mnt/sdcard /sdcard
-
-on early-boot
-    # set RLIMIT_MEMLOCK to 32MB
-    setrlimit 8 33554432 33554432
 
 on post-fs
     mkdir /data/idd 0755 idd idd
@@ -24,18 +15,19 @@ on post-fs
     # Remount system as rw for things to come...
     mount yaffs2 mtd@system /system rw remount
 
+    # Mount appslog as rw on /system/vendor
+    mkdir /system/vendor 0755 root shell
+    #mount yaffs2 mtd@appslog /system/vendor
+    chown root shell /system/vendor
+    chmod 0755 /system/vendor
+
+    # Re-mount as read-only
+    #mount yaffs2 mtd@appslog /system/vendor rw remount
+    #mount yaffs2 mtd@system /system rw remount
+
 on early-boot
     # Start the offline charging (This blocks booting further in some cases)
     exec /system/bin/chargemon
-
-    # prepare the files for ipth-dm-client
-    
-
-    # added to use ipth fota_pipe
-    
-    
-    
-    
 
 on init
     # start master reset
@@ -43,9 +35,6 @@ on init
 
     # Check if flash was aborted
     exec /sbin/checkabortedflash
-
-    chmod 0660 /sys/devices/platform/msm_hsusb/gadget/lun1/file
-    chown usb usb /sys/devices/platform/msm_hsusb/gadget/lun1/file
 
 on boot
     
@@ -58,15 +47,10 @@ on boot
     mkdir /data/misc/dhcp 0770 dhcp dhcp
     
     chown dhcp system /data/misc/dhcp
-    
 
     mkdir /data/tombstones 0755 system system
     mkdir /data/crashsms 0711 system system
     mkdir /data/crashsms/crashes 0755 system system
-
-    # Make sure the crashsms/crashes are writable by crashmonitor
-    
-    
 
     # bluetooth power up/down interface
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
@@ -143,23 +127,26 @@ on boot
 
 
     #install bcm4329 module if needed
-    exec /sbin/sh /sbin/autowifi.sh  
+    exec /sbin/sh /sbin/autowifi.sh
+
+    # usb fixes
+    mkdir /dev/bus 0771 system system
+    mkdir /dev/bus/usb 0771 system system
+    chmod 0660 /sys/devices/platform/msm_hsusb/gadget/lun1/file
+    chown usb usb /sys/devices/platform/msm_hsusb/gadget/lun1/file
+    
+    exec /system/bin/usbeng
 
     # Default tcp buffersizes for hsdpa
     setprop net.tcp.buffersize.hsdpa 5840,87380,165467,4096,16384,110208
     setprop net.tcp.buffersize.hspa 5840,87380,165467,4096,16384,110208
 
-    write /sys/class/android_usb/android0/iManufacturer $ro.product.manufacturer
-    write /sys/class/android_usb/android0/iProduct $ro.product.model
-
 service nvcustomizer /system/bin/nvcustomizer
-    class main
     user root
     oneshot
 
 # Copy calibration data from NV to kernel drivers
 service nvimport /system/bin/nvimport
-    class main
     user root
     oneshot
 
@@ -172,6 +159,7 @@ service wpa_supplicant /system/bin/wpa_supplicant \
     socket wpa_eth0 dgram 660 wifi wifi
     disabled
     oneshot
+
 
 service dhcpcd_eth0 /system/bin/dhcpcd -BK -t 30
     disabled
@@ -211,7 +199,6 @@ on property:persist.kernel.log=default
    exec /system/bin/klogrouter default
 
 service klogrouterd /system/bin/klogrouter logcat
-    class main
     oneshot
 
 on property:dev.bootcomplete=1
@@ -219,12 +206,10 @@ on property:dev.bootcomplete=1
    start atfwd-daemon
 
 service updatemiscta /system/bin/updatemiscta
-    class main
     user root
     oneshot
 
 service iddd /system/bin/iddd
-    class main
     user idd
     group idd log
 
@@ -246,15 +231,10 @@ service lcatp /system/bin/lcatp
     oneshot
 
 service qmuxd /system/bin/qmuxd
-    class main
 
 service akmd8975 /system/bin/akmd8975
-    class main
 
 service mltlusbd /system/bin/mltlusbd
-    class main
-
-
 
 # Slider counter service is used to count the number of times
 # the keypad has been opened or closed.  The result is written
@@ -263,36 +243,54 @@ service mltlusbd /system/bin/mltlusbd
 service slidercounter /system/bin/slidercounter keypad-zeus
 
 service hw_config /system/bin/sh /system/etc/hw_config.sh
-    class main
     user root
     oneshot
 
-
 service lidswitchd /system/bin/lidswitchd
-    class main
 
 service utsd /system/bin/utsd
-    class main
-
-#added to use ipth fota_pipe
-
 
 # DRM key activation
 service suntrolkac /system/bin/suntrolkac
-    class main
     user root
     oneshot
 
 
-on property:sys.usb.config=*
-    exec /init.usb.ics-stock_helper.sh
+on property:persist.service.adb.enable=1
+    exec /init.usb.gb-stock_helper.sh
 
-exec /system/bin/usbeng
+on property:persist.service.adb.enable=0
+    exec /init.usb.gb-stock_helper.sh
 
+on property:persist.usb.eng=1
+    exec /init.usb.gb-stock_helper.sh
+
+on property:persist.usb.eng=0
+    exec /init.usb.gb-stock_helper.sh
+
+on property:usb.rndis.enable=1
+    exec /init.usb.gb-stock_helper.sh
+
+on property:usb.rndis.enable=0
+    exec /init.usb.gb-stock_helper.sh
+
+on property:persist.usb.storagemode=msc
+    exec /init.usb.gb-stock_helper.sh
+
+on property:persist.usb.storagemode=mtp
+    exec /init.usb.gb-stock_helper.sh
+
+on property:usb.pcc.enable=1
+    exec /init.usb.gb-stock_helper.sh
+
+on property:usb.pcc.enable=0
+    exec /init.usb.gb-stock_helper.sh
+
+on property:usb.accessory.enable=0
+    exec /init.usb.gb-stock_helper.sh
 
 # Net mgr
 service netmgrd /system/bin/netmgrd -E
-    class main
 
 # ro.hsdpa_cat set by nvimport
 on property:ro.hsdpa_cat=8
@@ -307,11 +305,6 @@ on property:ro.use_data_netmgrd=false
     stop netmgrd
 
 service media /system/bin/mediaserver
-    class main
     user media
-    group system audio camera graphics inet net_bt net_bt_admin net_raw radio net_bw_acct drmrpc
+    group system audio camera graphics inet net_bt net_bt_admin net_raw radio
     ioprio rt 4
-
-on init
-    write /sys/class/android_usb/android0/iSerial $ro.serialno
-
