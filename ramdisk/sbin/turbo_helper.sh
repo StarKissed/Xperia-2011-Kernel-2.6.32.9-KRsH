@@ -218,6 +218,8 @@ mounter() # INTERNAL (parameters start at $1, i.e don't ever call from commandli
                     rm -rf /sd-ext/system_slot$1
                 fi
                 echo "[TSDX] Moving /data/system to /sd-ext/system_slot$1" >>/boot.log
+                mkdir -p /sd-ext/system_slot$1
+                chmod 777 /sd-ext/system_slot$1
                 cp -a /data/system/* /sd-ext/system_slot$1/ >>/boot.log
                 rm -rf /data/system >>/boot.log
                 busybox echo 0 > $BOOTREC_LED_RED
@@ -406,10 +408,11 @@ settsdx()
                 rm -f /data/$f
                 if [ "$f" == "system" ]; then
                     # special case (always move/delete from sd-ext)
-                    mv -f /sd-ext/system_slot$3 /data/system
+                    cp -a /sd-ext/system_slot$3/* /data/system/
+                    rm -rf /sd-ext/system_slot$3
                 elif [ "$f" != "app" ] && [ "$f" != "app-asec" ] ; then
                     # only copy if not /data/app or app-asec
-                    cp -a /sd-ext/$f /data/$f
+                    cp -a /sd-ext/$f/* /data/$f/
                 fi
             fi
         done
