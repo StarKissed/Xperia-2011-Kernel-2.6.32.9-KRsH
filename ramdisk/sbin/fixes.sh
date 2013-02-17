@@ -52,6 +52,7 @@ fi
 if [ -e /turbo_stock-gb ]; then
     echo "`getprop ro.product.manufacturer`" > /sys/class/android_usb/android0/iManufacturer
     echo "`getprop ro.semc.product.device`" > /sys/class/android_usb/android0/iProduct
+    echo /dev/block/mmcblk0 > /sys/devices/platform/msm_hsusb/gadget/lun0/file
 fi
 
 sleep 1
