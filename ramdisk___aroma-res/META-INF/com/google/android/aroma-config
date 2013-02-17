@@ -374,6 +374,7 @@ if prop("systemtask.prop","selected")=="4" then
     exec("/sbin/turbo_helper.sh", "checkdeasec");
     exec("/sbin/turbo_helper.sh", "checkusb");
     exec("/sbin/turbo_helper.sh", "checkals");
+    exec("/sbin/turbo_helper.sh", "checklogging");
     
     menubox("Tweaks and Mods",
             "Please select the task you wish to perform.",
@@ -383,7 +384,8 @@ if prop("systemtask.prop","selected")=="4" then
             file_getprop("/tmp/urandomstatus.prop","title"),        file_getprop("/tmp/urandomstatus.prop","text"),                 "@disk",
             file_getprop("/tmp/deasecstatus.prop","title"),         file_getprop("/tmp/deasecstatus.prop","text"),                  "@android",
             file_getprop("/tmp/usbstatus.prop","title"),            file_getprop("/tmp/usbstatus.prop","text"),                     "@disk",
-            file_getprop("/tmp/alsstatus.prop","title"),            file_getprop("/tmp/alsstatus.prop","text"),                     "@warning"
+            file_getprop("/tmp/alsstatus.prop","title"),            file_getprop("/tmp/alsstatus.prop","text"),                     "@warning",
+            file_getprop("/tmp/loggingstatus.prop","title"),        file_getprop("/tmp/loggingstatus.prop","text"),                 "@android"
     );
     
     if prop("tweaksmods.prop","selected")=="1" then
@@ -462,6 +464,10 @@ if prop("systemtask.prop","selected")=="4" then
     
     if prop("tweaksmods.prop","selected")=="5" then
         exec("/sbin/turbo_helper.sh", "setals", file_getprop("/tmp/alsstatus.prop","task"));
+    endif;
+    
+    if prop("tweaksmods.prop","selected")=="6" then
+        exec("/sbin/turbo_helper.sh", "setlogging", file_getprop("/tmp/loggingstatus.prop","task"));
     endif;
     
     exec("sync");

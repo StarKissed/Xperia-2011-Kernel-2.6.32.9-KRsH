@@ -326,7 +326,13 @@ mountproc()
     echo "[TURBO] Running fixes/hacks script for specific ROM fixes..." >>/boot.log
     /sbin/fixes.sh
 
+    # Tweak - Disable ALS (if selected)
     /sbin/disableals.sh
+
+    # Tweak - disable logging (if selected)
+    if [ -e /data/logging_disabled ]; then
+        rm -rf /dev/log/*
+    fi
 
     echo "[TURBO] Stage 2 finished, continue standard Android boot. Bye!" >>/boot.log
     date >>/boot.log
@@ -581,6 +587,38 @@ setals()
 
     if [ "$2" == "enable" ]; then
         rm -f /data/als_disabled
+    fi
+
+    sync
+}
+
+checklogging()
+{
+    sync
+    
+    if [ -e /data/logging_disabled ]; then
+        echo "title=Enable Logging" > /tmp/loggingstatus.prop
+        echo "text=Enable Logging again so Logcat will function" >> /tmp/loggingstatus.prop
+        echo "task=enable" >> /tmp/loggingstatus.prop
+    else
+        echo "title=Disable Logging" > /tmp/loggingstatus.prop
+        echo "text=Disable the system from logging. Logcat will be disabled - this may improve performance." >> /tmp/loggingstatus.prop
+        echo "task=disable" >> /tmp/loggingstatus.prop
+    fi
+    
+    sync
+}
+
+setlogging()
+{
+    sync
+
+    if [ "$2" == "disable" ]; then
+        echo "1" > /data/logging_disabled
+    fi
+
+    if [ "$2" == "enable" ]; then
+        rm -f /data/logging_disabled
     fi
 
     sync
