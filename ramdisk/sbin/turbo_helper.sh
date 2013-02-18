@@ -329,9 +329,13 @@ mountproc()
     # Tweak - Disable ALS (if selected)
     /sbin/disableals.sh
 
-    # Tweak - disable logging (if selected)
+    # Tweak - logging (if selected)
     if [ -e /data/logging_disabled ]; then
         rm -rf /dev/log/*
+    fi
+
+    if [ -e /data/logging_extended ]; then
+        /sbin/logging.sh&
     fi
 
     echo "[TURBO] Stage 2 finished, continue standard Android boot. Bye!" >>/boot.log
@@ -598,12 +602,16 @@ checklogging()
     
     if [ -e /data/logging_disabled ]; then
         echo "title=Enable Logging" > /tmp/loggingstatus.prop
-        echo "text=Enable Logging again so Logcat will function" >> /tmp/loggingstatus.prop
-        echo "task=enable" >> /tmp/loggingstatus.prop
+        echo "text=Logging is currently disabled. Select to change." >> /tmp/loggingstatus.prop
+        echo "current=disabled" >> /tmp/loggingstatus.prop
+    elif [ -e /data/logging_extended ]; then
+        echo "title=Change Logging" > /tmp/loggingstatus.prop
+        echo "text=Logging is currently set to extended. Select to change." >> /tmp/loggingstatus.prop
+        echo "current=extended" >> /tmp/loggingstatus.prop
     else
-        echo "title=Disable Logging" > /tmp/loggingstatus.prop
-        echo "text=Disable the system from logging. Logcat will be disabled - this may improve performance." >> /tmp/loggingstatus.prop
-        echo "task=disable" >> /tmp/loggingstatus.prop
+        echo "title=Change Logging" > /tmp/loggingstatus.prop
+        echo "text=Logging is currently set to standard. Select to change." >> /tmp/loggingstatus.prop
+        echo "current=standard" >> /tmp/loggingstatus.prop
     fi
     
     sync
@@ -613,12 +621,19 @@ setlogging()
 {
     sync
 
-    if [ "$2" == "disable" ]; then
-        echo "1" > /data/logging_disabled
+    if [ "$2" == "default" ]; then
+        rm -f /data/logging_disabled
+        rm -f /data/logging_extended
     fi
 
-    if [ "$2" == "enable" ]; then
+    if [ "$2" == "disabled" ]; then
+        echo "1" > /data/logging_disabled
+        rm -f /data/logging_extended
+    fi
+
+    if [ "$2" == "extended" ]; then
         rm -f /data/logging_disabled
+        echo "1" > /data/logging_extended
     fi
 
     sync
