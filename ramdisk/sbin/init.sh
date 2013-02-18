@@ -42,7 +42,8 @@ busybox echo 1024000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 busybox echo 122000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 
 # make links
-busybox ln -s /sbin/recoverz /sbin/reboot
+busybox mkdir /sbin/internal
+busybox ln -s /sbin/recoverz /sbin/internal/reboot
 busybox ln -s /sbin/recoverz /sbin/sh
 
 if [ ! -e /cache/recovery/boot ]; then

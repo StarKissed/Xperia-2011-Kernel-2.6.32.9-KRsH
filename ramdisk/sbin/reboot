@@ -1,0 +1,11 @@
+#!/sbin/busybox sh
+#
+busybox echo "[!] Unmounting..."
+busybox sync
+busybox umount -f /system > /dev/null 2>&1
+busybox umount -f /data > /dev/null 2>&1
+busybox echo "[!] Syncing..."
+busybox sync
+busybox umount -f /dev/block/mmcblk0p1 > /dev/null 2>&1
+busybox echo "[!] Restarting..."
+/sbin/internal/reboot
