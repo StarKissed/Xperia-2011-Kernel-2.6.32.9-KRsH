@@ -22,18 +22,13 @@ echo "[i] Making bootimage, standby..."
 
 cp -f drivers/net/wireless/bcm4329/bcm4329.ko ramdisk/modules/
 
-rm ./ramdisk/sbin/aroma-res.zip
-cd ramdisk___aroma-res
-zip -9 -r -q ../ramdisk/sbin/aroma-res.zip *
-cd ..
-
 ./$MKBOOTFS ./ramdisk-jb > ramdisk/sbin/ramdisk-jb.cpio
 ./$MKBOOTFS ./ramdisk-ics > ramdisk/sbin/ramdisk-ics.cpio
 ./$MKBOOTFS ./ramdisk-ics-stock > ramdisk/sbin/ramdisk-ics-stock.cpio
 ./$MKBOOTFS ./ramdisk-gb-stock > ramdisk/sbin/ramdisk-gb-stock.cpio
 ./$MKBOOTFS ./ramdisk-twrp > ramdisk/sbin/ramdisk-twrp.cpio
 ./$MKBOOTFS ./ramdisk-cwm > ramdisk/sbin/ramdisk-cwm.cpio
-./$MKBOOTFS ./ramdisk | lzma -6e -C crc32 > ramdisk.cpio.lzma
+./$MKBOOTFS ./ramdisk | lzma -9e -C crc32 > ramdisk.cpio.lzma
 ./$MKBOOTIMG --base 0x00200000 --pagesize 131072 --kernel ./arch/arm/boot/zImage --ramdisk ramdisk.cpio.lzma -o boot.img
 
 rm ramdisk.cpio.lzma

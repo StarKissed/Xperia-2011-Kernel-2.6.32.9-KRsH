@@ -18,6 +18,8 @@ busybox echo 0 > $BOOTREC_LED_GREEN
 busybox echo 0 > $BOOTREC_LED_BLUE
 busybox sync
 kill `pidof recovery`
+cd /sbin/aroma-res/
+zip -1mr /sbin/aroma-res.zip .
 /sbin/aroma 1 0 "/sbin/aroma-res.zip"
 # copy repair log to sdcard if requested
 if [ -e /tmp/turbo_repair.ready2copy ]; then
