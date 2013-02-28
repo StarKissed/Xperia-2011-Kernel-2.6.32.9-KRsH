@@ -11,7 +11,17 @@ fi
 # link init every build (for cygwin/linux compatibility)
 cd ramdisk
 ln -s /sbin/init.sh init
-cd ..
+cd ../ramdisk-gb-stock/sbin
+ln -s ../init ueventd
+cd ../../ramdisk-ics/sbin
+ln -s ../init ueventd
+cd ../../ramdisk-ics-stock/sbin
+ln -s ../init ueventd
+cd ../../ramdisk-jb/sbin
+ln -s ../init ueventd
+
+
+cd ../..
 
 if [ ! -e ./ramdisk/modules/ ]
 then
