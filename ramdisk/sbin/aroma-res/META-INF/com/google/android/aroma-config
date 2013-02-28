@@ -467,15 +467,31 @@ if prop("systemtask.prop","selected")=="4" then
     endif;
     
     if prop("tweaksmods.prop","selected")=="6" then
+        setvar("tmp1", "0");
+        setvar("tmp2", "0");
+        setvar("tmp3", "0");
+
+        if file_getprop("/tmp/loggingstatus.prop","current")=="disabled" then
+            setvar("tmp2", "1");
+        endif;
+
+        if file_getprop("/tmp/loggingstatus.prop","current")=="extended" then
+            setvar("tmp3", "1");
+        endif;
+
+        if file_getprop("/tmp/loggingstatus.prop","current")=="standard" then
+            setvar("tmp1", "1");
+        endif;
+
         selectbox(
             "Logging Mode",
             "Please select a logging mode for this slot. Current mode is " + file_getprop("/tmp/loggingstatus.prop","current") + ".",
             "@android",
             "loggingmode.prop",
-            "Default",  "Default logging mode that most ROM's have. Logcat will function normally.",                    1,
-            "Disabled", "Disable logging completely. Logcat will not function at all - this may improve performance.",  0,
+            "Default",  "Default logging mode that most ROM's have. Logcat will function normally.",                    getvar("tmp1"),
+            "Disabled", "Disable logging completely. Logcat will not function at all - this may improve performance.",  getvar("tmp2"),
             "Extended", "Extended logging. In this mode all warnings, errors and fatals will be logged to " +
-                        "/sdcard/turbo.log. May decrease performance, but useful for reporting/gathering problems.",    0
+                        "/sdcard/turbo.log. May decrease performance, but useful for reporting/gathering problems.",    getvar("tmp3")
         );
 
         if prop("loggingmode.prop","selected.0")=="1" then
@@ -490,12 +506,17 @@ if prop("systemtask.prop","selected")=="4" then
             alert("WARNING","Extended logging constantly writes to the SDCard. If you (a) Unmount the SDCard, (b) Pull the battery or (c) Do a hard/unclean reboot while in the ROM, your SDCard may become damaged. In this case, use the Repair function to try and recover data.", "@warning");
             exec("/sbin/turbo_helper.sh", "setlogging", "extended");
         endif;
+        
+        exec("sync");
+        exec("umount", "/data");
+        exec("umount", "/system");
+        back("2");
+    else
+        exec("sync");
+        exec("umount", "/data");
+        exec("umount", "/system");
+        back("1");
     endif;
-
-    exec("sync");
-    exec("umount", "/data");
-    exec("umount", "/system");
-    back("1");
 endif;
 
 
