@@ -207,14 +207,8 @@ if getvar("exec_buffer") == "4\n" then
     setvar("slot4default", "[Default]"); 
 endif;
 
-if file_getprop("/cache/turbo.recovery","recovery") == "cwm";
-then
-    setvar("rec", "CWM");
-    setvar("recicon", "@cwm");
-else
-    setvar("rec", "TWRP");
-    setvar("recicon", "@twrp");
-endif;
+setvar("rec", "TWRP");
+setvar("recicon", "@twrp");
 
 
 ########################################
@@ -531,39 +525,10 @@ if prop("systemselect.prop","selected")=="5" then
             "@cog",
             "toolselect.prop",
             "Default Slot",         "Change the default slot for automatic booting",         "@disk",
-            "Recovery Selection",   "Current recovery is " + getvar("rec") + ".",            getvar("recicon"),
             "Repair",               "Perform a range of repair function for any slot",       "@repair",
             "Customize",            "Change the icon and text label for any slot",           "@customize",
             "Delete Slot",          "Delete a Slot from SDCard",                             "@warning"
     );
-
-    ##########
-    # Recovery
-    if prop("toolselect.prop","selected")=="2" then
-    menubox(
-        "Recovery Selection",
-        "Select the Recovery you wish to use. Currently set to " + getvar("rec") + ". After selection, Boot Menu must reboot.",
-        getvar("recicon"),
-        "rec.prop",
-            "TWRP",   "Switch to TWRP (Default)",   "@twrp",
-            "CWM",    "Switch to CWM",              "@cwm"
-    );
-    
-    if prop("rec.prop","selected")=="1" then
-        write("/cache/turbo.recovery", "recovery=twrp\n");
-    endif;
-    
-    if prop("rec.prop","selected")=="2" then
-        write("/cache/turbo.recovery", "recovery=cwm\n");
-    endif;
-    
-    exec("mkdir", "/cache/recovery");
-    write("/cache/recovery/boot", "1\n");
-    
-    exec("sync");
-    exit("");
-endif;
-
     
     ##########
     # Default
@@ -602,7 +567,7 @@ endif;
        
     ##########
     # Repair
-    if prop("toolselect.prop","selected")=="3" then
+    if prop("toolselect.prop","selected")=="2" then
         menubox("Repair",
             "Please select your desired repair function",
             "@repair",
@@ -687,7 +652,7 @@ endif;
     
     ##########
     # Customize
-    if prop("toolselect.prop","selected")=="4" then
+    if prop("toolselect.prop","selected")=="3" then
         menubox("Customze",
             "Please select the slot you wish to customize.",
             "@customize",
@@ -772,7 +737,7 @@ endif;
 
     ##########
     # Delete Slot
-    if prop("toolselect.prop","selected")=="5" then
+    if prop("toolselect.prop","selected")=="4" then
         menubox("Delete Slot",
             "Select the Slot to delete. The delete will remove both system and userdata images from SDCard and clear all settings for it. In the case of Slot 1, it will just remove Boot settings.",
             "@warning",

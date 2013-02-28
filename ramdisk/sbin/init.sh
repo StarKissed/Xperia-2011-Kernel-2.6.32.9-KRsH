@@ -114,20 +114,6 @@ busybox pkill -f "busybox cat ${BOOTREC_EVENT}"
 if [ -e /tmp/bootrec ]
 then
     busybox rm /tmp/bootrec
-    if [ ! -e /cache/turbo.recovery ]; then
-        # set default recovery
-        busybox echo "recovery=twrp" > /cache/turbo.recovery
-    fi
-    recovery=`busybox cat /cache/turbo.recovery | busybox sed s/recovery=//g`
-    if [ -e /sbin/ramdisk-$recovery.cpio ]; then
-        busybox echo '[TURBO] Recovery image - /sbin/ramdisk-'$recovery'.cpio' >>boot.log
-        rec_image=/sbin/ramdisk-$recovery.cpio
-	else
-        # invalid recovery ramdisk
-        busybox echo '[TURBO] Recovery image /sbin/ramdisk-'$recovery'.cpio not found!' >>boot.log
-        busybox echo '        Using /sbin/ramdisk-twrp.cpio instead' >>boot.log
-        rec_image=/sbin/ramdisk-twrp.cpio
-    fi
     load_image=$rec_image
     busybox echo 0 > /sys/module/msm_fb/parameters/align_buffer
 else
@@ -212,11 +198,6 @@ busybox echo 0 > $BOOTREC_LED_BLUE
 
 # unpack the ramdisk
 busybox cpio -d -i -F ${load_image}
-
-#cwm
-if [ ! -e /sbin/recovery ]; then
-    busybox cp /sbin/recoverz /sbin/recovery
-fi
 
 # make links
 cd /sbin
