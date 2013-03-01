@@ -1,6 +1,5 @@
 *.o
 *.cmd
-*.ko
 
 .config
 .config.old

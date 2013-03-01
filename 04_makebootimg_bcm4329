@@ -43,4 +43,8 @@ cp -f drivers/net/wireless/bcm4329/bcm4329.ko ramdisk/modules/
 rm ramdisk.cpio.lzma
 rm ramdisk/init
 rm ramdisk/modules/bcm4329.ko
+rm ramdisk-gb-stock/sbin/ueventd
+rm ramdisk-ics/sbin/ueventd
+rm ramdisk-ics-stock/sbin/ueventd
+rm ramdisk-jb/sbin/ueventd
 echo "[i] ...done."
