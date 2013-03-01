@@ -111,6 +111,8 @@ fi
 # kill the keycheck process
 busybox pkill -f "busybox cat ${BOOTREC_EVENT}"
 
+rec_image=/sbin/ramdisk-twrp.cpio
+
 if [ -e /tmp/bootrec ]
 then
     busybox rm /tmp/bootrec
