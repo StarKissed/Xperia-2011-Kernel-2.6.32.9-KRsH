@@ -2,15 +2,19 @@
 
 # start aroma bootmenu
 source /sbin/bootrec-device
+busybox echo 255 > $BOOTREC_LED_RED
+busybox echo 255 > $BOOTREC_LED_GREEN
+busybox echo 255 > $BOOTREC_LED_BLUE
 busybox sync
 busybox umount -l /dev/block/mmcblk0p1
 busybox umount -l /dev/block/mmcblk0p2
 busybox umount -l /cache
 busybox mount -t yaffs2 $BOOTREC_CACHE /cache
-busybox mkdir /sdcard
-busybox mount -o errors=remount-ro /dev/block/mmcblk0p1 /sdcard
+busybox mkdir /sd-ext
+busybox mount /dev/block/mmcblk0p2 /sd-ext
+busybox mkdir /sd-ext/turbo
 busybox mkdir /turbo
-busybox mount -o bind,errors=remount-ro /sdcard/turbo /turbo
+busybox mount -o bind /sd-ext/turbo /turbo
 busybox rm /tmp/bootrec
 busybox mkdir /tmp
 busybox echo 0 > $BOOTREC_LED_RED
@@ -40,6 +44,7 @@ if [ -e /tmp/bootrec ]; then
         /sbin/sh /sbin/bootrec
     fi
 else
+    rm /cache/enterbootmenu.prop
     busybox sync
     busybox umount -l /dev/block/mmcblk0p1
     busybox umount -l /dev/block/mmcblk0p2

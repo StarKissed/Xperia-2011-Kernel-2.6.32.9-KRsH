@@ -30,7 +30,7 @@ busybox mknod -m 600 $BOOTREC_EVENT_NODE
 busybox mknod -m 666 /dev/null c 1 3
 busybox mknod -m 600 /dev/block/mmcblk0 b 179 0
 busybox mknod -m 600 /dev/block/mmcblk0p1 b 179 1
-#busybox fdisk -l /dev/block/mmcblk0
+busybox mknod -m 600 /dev/block/mmcblk0p2 b 179 2
 
 # mount filesystems
 busybox mount -t proc proc /proc
@@ -72,32 +72,40 @@ busybox echo 200 > $BOOTREC_LED_BLUE
 load_image=/sbin/ramdisk-twrp.cpio
 
 # mount sdcard to load settings and such
-busybox mkdir /sdcard
-busybox mount -o errors=remount-ro /dev/block/mmcblk0p1 /sdcard
-
-busybox mkdir /sdcard/turbo
+#busybox mkdir /sdcard
+#busybox mount -o errors=remount-ro /dev/block/mmcblk0p1 /sdcard
 
 # sdcard error check
-if [ -e /cache/dorepair.prop ]; then
-    busybox rm -f /cache/dorepair.prop
-fi
-sdcard_test=`busybox mount | busybox grep '/sdcard'`
-sdcard_test2=`busybox mount | busybox grep '/sdcard' | busybox sed "s/(ro,//g"`
-if [ "$sdcard_test" != "$sdcard_test2" ]; then
-    busybox touch /cache/recovery/boot
-    busybox echo "repair=sdcard" > /cache/dorepair.prop
-fi
+#if [ -e /cache/dorepair.prop ]; then
+#    busybox rm -f /cache/dorepair.prop
+#fi
+#sdcard_test=`busybox mount | busybox grep '/sdcard'`
+#sdcard_test2=`busybox mount | busybox grep '/sdcard' | busybox sed "s/(ro,//g"`
+#if [ "$sdcard_test" != "$sdcard_test2" ]; then
+#    busybox mkdir /cache/recovery
+#    busybox touch /cache/recovery/boot
+#    busybox echo "repair=sdcard" > /cache/dorepair.prop
+#fi
 
-# bind-mount turbo data then unmount sdcard
-busybox mkdir /turbo
-busybox mount -o bind,errors=remount-ro /sdcard/turbo /turbo
-busybox umount -l /sdcard
-busybox rm -rf /sdcard
+#busybox umount -l /sdcard
 
-# fresh turbo check
-if [ ! -e /turbo/version ]; then
-    # Boot Menu has never run, force it
+busybox mkdir /sd-ext
+
+# check for ext4 partition
+rm /cache/enterbootmenu.prop
+sdxt=`busybox blkid | busybox grep mmcblk0p2 | busybox sed s/.*TYPE=\"//g | busybox sed s/\"//g`
+if [ "$sdxt" != "ext4" ]; then
+    busybox mkdir /cache/recovery
     busybox touch /cache/recovery/boot
+    busybox echo "reason=noext4" > /cache/enterbootmenu.prop
+else
+    busybox mount /dev/block/mmcblk0p2 /sd-ext
+    # fresh turbo check
+    if [ ! -e /sd-ext/turbo/version ]; then
+        # Boot Menu has never run, force it
+        busybox mkdir /cache/recovery
+        busybox touch /cache/recovery/boot
+    fi
 fi
 
 # boot decision
@@ -125,41 +133,41 @@ else
     if   [ -e /cache/multiboot1 ]
     then
         # Slot 1 (one time only)
-        mode=$(busybox grep -F "mode=" /turbo/slot1mode.prop | busybox sed "s/mode=//g")
+        mode=$(busybox grep -F "mode=" /sd-ext/turbo/slot1mode.prop | busybox sed "s/mode=//g")
         busybox echo '[TURBO] Booting Internal/Slot 1 (One-time only)' >>boot.log
     elif [ -e /cache/multiboot2 ]
     then
         # Slot 2 (one time only)
-        mode=$(busybox grep -F "mode=" /turbo/slot2mode.prop | busybox sed "s/mode=//g")
+        mode=$(busybox grep -F "mode=" /sd-ext/turbo/slot2mode.prop | busybox sed "s/mode=//g")
         busybox echo '[TURBO] Booting Slot 2 (One-time only)' >>boot.log
     elif [ -e /cache/multiboot3 ]
     then
         # Slot 3 (one time only)
-        mode=$(busybox grep -F "mode=" /turbo/slot3mode.prop | busybox sed "s/mode=//g")
+        mode=$(busybox grep -F "mode=" /sd-ext/turbo/slot3mode.prop | busybox sed "s/mode=//g")
         busybox echo '[TURBO] Booting Slot 3 (One-time only)' >>boot.log
     elif [ -e /cache/multiboot4 ]
     then
         # Slot 4 (one time only)
-        mode=$(busybox grep -F "mode=" /turbo/slot4mode.prop | busybox sed "s/mode=//g")
+        mode=$(busybox grep -F "mode=" /sd-ext/turbo/slot4mode.prop | busybox sed "s/mode=//g")
         busybox echo '[TURBO] Booting Slot 4 (One-time only)' >>boot.log
     elif [ -e /turbo/defaultboot_2 ]
     then
         # Slot 2 (default)
-        mode=$(busybox grep -F "mode=" /turbo/slot2mode.prop | busybox sed "s/mode=//g")
+        mode=$(busybox grep -F "mode=" /sd-ext/turbo/slot2mode.prop | busybox sed "s/mode=//g")
         busybox echo '[TURBO] Booting Slot 2 (Default)' >>boot.log
     elif [ -e /turbo/defaultboot_3 ]
     then
         # Slot 3 (default)
-        mode=$(busybox grep -F "mode=" /turbo/slot3mode.prop | busybox sed "s/mode=//g")
+        mode=$(busybox grep -F "mode=" /sd-ext/turbo/slot3mode.prop | busybox sed "s/mode=//g")
         busybox echo '[TURBO] Booting Slot 3 (Default)' >>boot.log
     elif [ -e /turbo/defaultboot_4 ]
     then
         # Slot 4 (default)
-        mode=$(busybox grep -F "mode=" /turbo/slot4mode.prop | busybox sed "s/mode=//g")
+        mode=$(busybox grep -F "mode=" /sd-ext/turbo/slot4mode.prop | busybox sed "s/mode=//g")
         busybox echo '[TURBO] Booting Slot 4 (Default)' >>boot.log
     else
         # Internal/Slot 1 (default)
-        mode=$(busybox grep -F "mode=" /turbo/slot1mode.prop | busybox sed "s/mode=//g")
+        mode=$(busybox grep -F "mode=" /sd-ext/turbo/slot1mode.prop | busybox sed "s/mode=//g")
         busybox echo '[TURBO] Booting Internal/Slot 1 (Default)' >>boot.log
     fi
     if [ "$mode" == "" ]
@@ -216,16 +224,19 @@ busybox umount -l /cache
 busybox umount -l /proc
 busybox umount -l /sys
 busybox umount -l /tmp
-busybox umount -l /turbo
+busybox umount -l /sd-ext
+busybox rm -rf /sd-ext
+busybox umount -l /sdcard
+busybox rm -rf /sdcard
+
+busybox echo 0 > $BOOTREC_LED_RED
+busybox echo 0 > $BOOTREC_LED_GREEN
+busybox echo 0 > $BOOTREC_LED_BLUE
 
 busybox rm -rf /cache
 busybox rm -rf /dev/*
 busybox echo "[TURBO] Stage 1 finished" >>boot.log
 busybox date >>boot.log
 export PATH="${_PATH}"
-
-busybox echo 0 > $BOOTREC_LED_RED
-busybox echo 0 > $BOOTREC_LED_GREEN
-busybox echo 0 > $BOOTREC_LED_BLUE
 
 exec /init

@@ -138,6 +138,146 @@ endif;
 ########################################
 ########################################
 
+if file_getprop("/cache/enterbootmenu.prop","reason") == "noext4";
+then
+    exec("/sbin/turbo_helper.sh", "checksdext");
+    if file_getprop("/tmp/sdxt_check.prop","result") == "sdxt_none";
+    then
+        viewbox(
+            "Problem Detected",
+            "Your SDCard has no sd-ext partition. Turbo Kernel requires one.\n\n"+
+            "On the next page you will be able to shrink your main FAT32 partition and create a new sd-ext partition in the free space after it.\n\n"+
+            "sd-ext will be used to store Turbo Kernel settings, as well as system and userdata for any extra slots you wish to use. If you intend on using more slots, it would be a good idea to reserve at least 1GiB for every slot you'd like to use.\n\n\n"+
+            "<b><#5f5>It is recommended to backup your SDCard before continuing. If you need to, pull the battery now and do so via computer.</#></b>",
+            "@disk"
+        );
+        selectbox(
+            "Size of sd-ext",
+            "Please select your desired size for sd-ext partition. Current free space is " + file_getprop("/tmp/sdxt_check.prop","size") + " - do not exceed this!",
+            "@disk",
+            "sdxt_desired.prop",
+            "100MB",  "Smallest possible size. Does not support extra slots, only used for storing Turbo settings.",  1,
+            "1GiB",   "Recommended only for one extra slot.",                                                         0,
+            "2GiB",   "Ideal minimum for two extra slots.",                                                           0,
+            "4GiB",   "Ideal for all three extra slots with some room to spare.",                                     0,
+            "6GiB",   "Ideal for all three extra slots with more room to spare.",                                     0,
+            "8GiB",   "Ideal for all three extra slots with lots of room to spare.",                                  0
+        );
+        
+        if prop("sdxt_desired.prop","selected.0")=="1" then
+            setvar("desired", "100")
+        endif;
+        if prop("sdxt_desired.prop","selected.0")=="2" then
+            setvar("desired", "1024")
+        endif;
+        if prop("sdxt_desired.prop","selected.0")=="3" then
+            setvar("desired", "2048")
+        endif;
+        if prop("sdxt_desired.prop","selected.0")=="4" then
+            setvar("desired", "4096")
+        endif;
+        if prop("sdxt_desired.prop","selected.0")=="5" then
+            setvar("desired", "6144")
+        endif;
+        if prop("sdxt_desired.prop","selected.0")=="6" then
+            setvar("desired", "8192")
+        endif;
+        
+        selectbox(
+            "Size of swap",
+            "Please select your desired size for swap partition. This is required to use the Turbo Swap feature.",
+            "@disk",
+            "swap_desired.prop",
+            "None",   "Don't create a swap partition",     1,
+            "16MB",   "Small Turbo swap",                  0,
+            "32MB",   "Medium swap",                       0,
+            "64MB",   "Large swap (recommended)",          0
+        );
+        
+        if prop("swap_desired.prop","selected.0")=="1" then
+            setvar("desired_swap", "0")
+        endif;
+        if prop("swap_desired.prop","selected.0")=="2" then
+            setvar("desired_swap", "16")
+        endif;
+        if prop("swap_desired.prop","selected.0")=="3" then
+            setvar("desired_swap", "32")
+        endif;
+        if prop("swap_desired.prop","selected.0")=="4" then
+            setvar("desired_swap", "64")
+        endif;
+        
+        viewbox(
+            "Ready to partition",
+            "Partitioning is ready to begin.\n\n"+
+            "Your main FAT32 partition will be resized to fit an sd-ext of " + getvar("desired") + "MB which will be formatted as ext4. If you selected swap, FAT32 will be additionally resized to fit it in after sd-ext.\n\n"+
+            "The current free space of your main FAT32 partition is " + file_getprop("/tmp/sdxt_check.prop","size") + " - please make sure your SDCard will still have free space after shrinking, otherwise this process will fail and your SDCard data will be corrupt.\n\n\n"+
+            "<b><#f55>This process will take some time.</#> <#5f5>It is recommended to insert a USB charger to prevent power failure. \n\nPress Next to begin partitioning.</#></b>",
+            "@disk"
+        );
+        
+        setvar("fat_end", cal(getvar("desired"),"+",getvar("desired_swap")));
+        
+        pleasewait("Resizing FAT32...");
+        exec("/sbin/turbo_helper.sh", "sdext_resize", getvar("desired"), getvar("desired_swap"), getvar("fat_end"));
+        pleasewait("Partitioning sd-ext...");
+        exec("/sbin/turbo_helper.sh", "sdext_format", getvar("desired"), getvar("desired_swap"), getvar("fat_end"));
+        pleasewait("Updating...");
+        exec("/sbin/turbo_helper.sh", "sdext_convert");
+        
+    endif;
+    
+    if file_getprop("/tmp/sdxt_check.prop","result") == "sdxt_wrong";
+    then
+        viewbox(
+            "Problem Detected",
+            "Your SDCard has an sd-ext partition in the wrong format. Turbo Kernel requires ext4.\n\n"+
+            "Turbo Kernel will now convert your sd-ext partition to ext4.\n\n"+
+            "The current capacity of your sd-ext partition is " + file_getprop("/tmp/sdxt_check.prop","size") +". If you wish to resize partitions, you can do so later in the Boot Menu.\n\n\n"+
+            "<b><#5f5>If you restore sd-ext in TWRP from a non-ext4 backup, this message will appear and you'll need to convert it again.</#></b>",
+            "@disk"
+        );
+        
+        if confirm("Format",
+                   "Would you like to format the sd-ext? This is recommended for best performance and reliability. Selecting no will only convert.", 
+                   "@disk")=="yes"
+        then
+            setvar("format", "yes")
+        endif;
+        
+        viewbox(
+            "Ready to convert",
+            "Conversion is ready to begin.\n\n"+
+            "<b><#f55>This process may take a few minutes.</#> <#5f5>It is recommended to insert a USB charger to prevent power failure. \n\nPress Next to begin converting.</#></b>",
+            "@disk"
+        );
+        
+        if getvar("format") == "yes";
+        then
+            pleasewait("Formatting...");
+            exec("/sbin/turbo_helper.sh", "sdext_format");
+        else
+            pleasewait("Converting...");
+            exec("/sbin/turbo_helper.sh", "sdext_convert");
+        endif;
+    endif;
+    
+    ini_set("text_next", "Reboot");
+    
+    viewbox(
+        "Finished",
+        "The partition task on your SDCard is complete.\n\n"+
+        "<b><#5f5>Press reboot to continue the setup.</#></b>",
+        "@disk"
+    );
+    
+    exec("sync");
+    exit("");
+    
+endif;
+
+####
+
 exec("/sbin/turbo_helper.sh", "checkfresh");
 if getvar("exec_buffer") == "1\n"
 then
@@ -149,19 +289,16 @@ then
     );
 endif;
 
-exec("/sbin/turbo_helper.sh", "checkoldimages");
+exec("/sbin/turbo_helper.sh", "checkold");
 if getvar("exec_buffer") == "1\n"
 then
     viewbox(
         "Upgrade detected",
-        "Turbo Kernel has detected that you have Slot images in the old r12 (and earlier) location.\n\n" +
-        "These images must be moved to the new location (the folder 'turbo' on SDCard).\n\n" +
-        "This may take some time, ensure you have enough battery charge before continuing.\n\n" +
-        "Press next to start moving these images.",
+        "Turbo Kernel has detected that you have Slot images (or configuration) in the pre-v4.0 location.\n\n" +
+        "This location is no longer used and should be removed.\n\n" +
+        "Please delete the entire 'turbo' folder on your SDCard when you can.",
         "@about"
     );
-    pleasewait("Moving images...");
-    exec("/sbin/turbo_helper.sh", "moveoldimages");
 endif;
 
 

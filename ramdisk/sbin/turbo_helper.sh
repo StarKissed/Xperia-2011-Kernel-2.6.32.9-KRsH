@@ -3,6 +3,24 @@
 #set -x
 #exec >>/boot.log 2>&1
 
+checksdext()
+{
+    sdxt=`blkid | grep mmcblk0p2 | sed s/.*TYPE=\"//g | sed s/\"//g`
+    if [ "$sdxt" == "" ]; then
+        # no mmcblk0p2 at all
+        echo "result=sdxt_none" > /tmp/sdxt_check.prop
+        mount /dev/block/mmcblk0p1 /sdcard
+        sdxs=`df -h | grep /dev/block/mmcblk0p1 | awk '{print \$4}'`
+        echo "size=$sdxs">> /tmp/sdxt_check.prop
+        umount -l /dev/block/mmcblk0p1
+    elif [ "$sdxt" != "ext4" ]; then
+        # mmcblk0p2 exists but is not ext4
+        echo "result=sdxt_wrong" > /tmp/sdxt_check.prop
+        sdxs=`parted /dev/block/mmcblk0 print | grep primary | grep ' 2   ' | awk '{print \$4}'`
+        echo "size=$sdxs">> /tmp/sdxt_check.prop
+    fi
+}
+
 checkfresh()
 {
     if [ ! -e /turbo/version ]; then
@@ -27,24 +45,32 @@ checkfresh()
     fi     
 }
 
-checkoldimages()
+checkold()
 {
-    if [ -e /sdcard/system2.ext2.img ]   ||
-       [ -e /sdcard/userdata2.ext2.img ] ||
-       [ -e /sdcard/system3.ext2.img ]   ||
-       [ -e /sdcard/userdata3.ext2.img ]; then
+    if [ -d /sdcard/turbo ]; then
         echo "1";
     else
         echo "0";
     fi     
 }
 
-moveoldimages()
+checkdefault()
 {
-    mv /sdcard/system2.ext2.img /turbo/
-    mv /sdcard/userdata2.ext2.img /turbo/
-    mv /sdcard/system3.ext2.img /turbo/
-    mv /sdcard/userdata3.ext2.img /turbo/
+    if   [ -e /turbo/defaultboot_2 ]; then
+        rm /turbo/defaultboot_1 >> /dev/null 2>&1
+        rm /turbo/defaultboot_3 >> /dev/null 2>&1
+        rm /turbo/defaultboot_4 >> /dev/null 2>&1
+        echo "2";
+    elif [ -e /turbo/defaultboot_3 ]; then
+        rm /turbo/defaultboot_1 >> /dev/null 2>&1
+        rm /turbo/defaultboot_4 >> /dev/null 2>&1
+        echo "3";
+    elif [ -e /turbo/defaultboot_4 ]; then
+        rm /turbo/defaultboot_1 >> /dev/null 2>&1
+        echo "4";
+    else
+        echo "1";
+    fi
 }
 
 clearslot()
@@ -66,27 +92,6 @@ checkslot()
         echo "0";
     fi
 }
-
-
-checkdefault()
-{
-    if   [ -e /turbo/defaultboot_2 ]; then
-        rm /turbo/defaultboot_1 >> /dev/null 2>&1
-        rm /turbo/defaultboot_3 >> /dev/null 2>&1
-        rm /turbo/defaultboot_4 >> /dev/null 2>&1
-        echo "2";
-    elif [ -e /turbo/defaultboot_3 ]; then
-        rm /turbo/defaultboot_1 >> /dev/null 2>&1
-        rm /turbo/defaultboot_4 >> /dev/null 2>&1
-        echo "3";
-    elif [ -e /turbo/defaultboot_4 ]; then
-        rm /turbo/defaultboot_1 >> /dev/null 2>&1
-        echo "4";
-    else
-        echo "1";
-    fi
-}
-
 
 makeimage()
 {
@@ -637,6 +642,57 @@ setlogging()
     fi
 
     sync
+}
+
+sdext_resize()
+{
+    umount /dev/block/mmcblk0p1
+    umount /dev/block/mmcblk0p2
+    umount /dev/block/mmcblk0p3
+    parted -s -- /dev/block/mmcblk0 rm 2
+    parted -s -- /dev/block/mmcblk0 rm 3
+    dosfsck -a -n -V /dev/block/mmcblk0p1
+    parted -s -- /dev/block/mmcblk0 check 1
+    echo "# Resize FAT32" > /parted.log
+    echo "# Debug: $1 $2 $3 $4" >> /parted.log
+    if [ "$3" == 0 ]; then
+        echo "No swap selected" >> /parted.log
+        echo "parted -s -- /dev/block/mmcblk0 resize 1 0% -$2" >> /parted.log
+        parted -s -- /dev/block/mmcblk0 resize 1 0% -$2
+    else
+        echo "parted -s -- /dev/block/mmcblk0 resize 1 0% -$4" >> /parted.log
+        parted -s -- /dev/block/mmcblk0 resize 1 0% -$4
+    fi
+}
+
+sdext_format()
+{
+    umount /dev/block/mmcblk0p1
+    umount /dev/block/mmcblk0p2
+    umount /dev/block/mmcblk0p3
+    echo "# Create sd-ext" >> /parted.log
+    echo "# Debug: $1 $2 $3 $4" >> /parted.log
+    if [ "$3" == "0" ]; then
+        echo "parted -s -- /dev/block/mmcblk0 mkpartfs primary ext2 -$2 100%" >> /parted.log
+        parted -s -- /dev/block/mmcblk0 mkpartfs primary ext2 -$2 100% >> /parted.log
+    else
+        echo "parted -s -- /dev/block/mmcblk0 mkpartfs primary ext2 -$4 -$3" >> /parted.log
+        parted -s -- /dev/block/mmcblk0 mkpartfs primary ext2 -$4 -$3 >> /parted.log
+        echo "# Create swap" >> /parted.log
+        echo "parted -s -- /dev/block/mmcblk0 mkpartfs primary linux-swap -$3 100%" >> /parted.log
+        parted -s -- /dev/block/mmcblk0 mkpartfs primary linux-swap -$3 100% >> /parted.log
+    fi
+    mke2fs -b 4096 -m 0 -O extent,has_journal -t ext4 /dev/block/mmcblk0p2
+}
+
+sdext_convert()
+{
+    umount /dev/block/mmcblk0p1
+    umount /dev/block/mmcblk0p2
+    umount /dev/block/mmcblk0p3
+    tune2fs -j /dev/block/mmcblk0p2
+    tune2fs -m 0 -O extents,uninit_bg,dir_index,has_journal /dev/block/mmcblk0p2
+    e2fsck -fpDC0 /dev/block/mmcblk0p2
 }
 
 $1 $1 $2 $3 $4
