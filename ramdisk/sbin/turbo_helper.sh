@@ -253,18 +253,13 @@ mountproc()
     busybox echo 200 > $BOOTREC_LED_GREEN
     busybox echo 200 > $BOOTREC_LED_BLUE
     echo "[TURBO] Stage-2 (mountproc) started..." >>/boot.log
-    mount -o errors=remount-ro /dev/block/mmcblk0p1 /sdcard >>/boot.log
-    mount -o bind,errors=remount-ro /sdcard/turbo /turbo >>/boot.log
-    # Test for ext# SDCard
-    sdcard_ext=`mount | grep '/sdcard'`
-    sdcard_ext2=`mount | grep '/sdcard' | sed "s/type ext//g"`
-    if [ "$sdcard_ext" == "$sdcard_ext2" ]; then
-        # not ext#, unmount it
-        umount -l /sdcard >>/boot.log
-    else
-        # is ext#, keep mounted
-        echo "[TURBO] ext-formatted SDCard detected" >>/boot.log
-    fi
+    mkdir /sd-ext
+    mount /dev/block/mmcblk0p2 /sd-ext
+    mkdir /sd-ext/turbo
+    mkdir /turbo
+    mount -o bind /sd-ext/turbo /turbo
+    umount -l /sd-ext
+    rm -rf /sd-ext
     if   [ -e /cache/multiboot1 ]; then
         rm /cache/multiboot1
         mounter 1
@@ -312,8 +307,8 @@ mountproc()
         echo "[TURBO] Linking Google Now voice data to SDCard..." >>/boot.log
         mount -o remount,rw /system
         rm -rf /system/usr/srec/en-US
-        mkdir -p /turbo/goolenow
-        ln -s /turbo/goolenow /system/usr/srec/en-US
+        mkdir -p /turbo/googlenow
+        ln -s /turbo/googlenow /system/usr/srec/en-US
         mount -o remount,ro /system
     fi
 

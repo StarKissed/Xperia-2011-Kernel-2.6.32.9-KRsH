@@ -38,6 +38,11 @@ if [ -e /tmp/bootrec ]; then
         # add current slot # to TWRP header
         sed -i "s/<text>Current Slot -.*<\/text>/<text>$CURRENTSLOT<\/text>/g" /res/ui.xml
     fi
+    #if [ -d /turbo/system$CURRENTSLOTNUMBER ]; then
+    #    # Pre-mount slot folder for TWRP
+    #    busybox mount -o bind /turbo/system$CURRENTSLOTNUMBER /system
+    #    busybox mount -o bind /turbo/userdata$CURRENTSLOTNUMBER /data
+    #fi
     /sbin/recovery
     if [ -e /tmp/bootmenu ]; then
         rm /tmp/bootmenu

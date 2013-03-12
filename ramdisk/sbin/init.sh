@@ -108,6 +108,14 @@ else
     fi
 fi
 
+# ensure slot folders exist
+busybox mkdir /sd-ext/turbo/system2
+busybox mkdir /sd-ext/turbo/userdata2
+busybox mkdir /sd-ext/turbo/system3
+busybox mkdir /sd-ext/turbo/userdata3
+busybox mkdir /sd-ext/turbo/system4
+busybox mkdir /sd-ext/turbo/userdata4
+
 # boot decision
 if [ -s /dev/keycheck -o -e /cache/recovery/boot ]
 then
@@ -150,17 +158,17 @@ else
         # Slot 4 (one time only)
         mode=$(busybox grep -F "mode=" /sd-ext/turbo/slot4mode.prop | busybox sed "s/mode=//g")
         busybox echo '[TURBO] Booting Slot 4 (One-time only)' >>boot.log
-    elif [ -e /turbo/defaultboot_2 ]
+    elif [ -e /sd-ext/turbo/defaultboot_2 ]
     then
         # Slot 2 (default)
         mode=$(busybox grep -F "mode=" /sd-ext/turbo/slot2mode.prop | busybox sed "s/mode=//g")
         busybox echo '[TURBO] Booting Slot 2 (Default)' >>boot.log
-    elif [ -e /turbo/defaultboot_3 ]
+    elif [ -e /sd-ext/turbo/defaultboot_3 ]
     then
         # Slot 3 (default)
         mode=$(busybox grep -F "mode=" /sd-ext/turbo/slot3mode.prop | busybox sed "s/mode=//g")
         busybox echo '[TURBO] Booting Slot 3 (Default)' >>boot.log
-    elif [ -e /turbo/defaultboot_4 ]
+    elif [ -e /sd-ext/turbo/defaultboot_4 ]
     then
         # Slot 4 (default)
         mode=$(busybox grep -F "mode=" /sd-ext/turbo/slot4mode.prop | busybox sed "s/mode=//g")
