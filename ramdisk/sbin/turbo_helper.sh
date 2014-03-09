@@ -307,8 +307,8 @@ mountproc()
         echo "[TURBO] Linking Google Now voice data to SDCard..." >>/boot.log
         mount -o remount,rw /system
         rm -rf /system/usr/srec/en-US
-        mkdir -p /turbo/goolenow
-        ln -s /turbo/goolenow /system/usr/srec/en-US
+        mkdir -p /turbo/googlenow
+        ln -s /turbo/googlenow /system/usr/srec/en-US
         mount -o remount,ro /system
     fi
 

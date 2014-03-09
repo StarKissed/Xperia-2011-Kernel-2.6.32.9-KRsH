@@ -31,7 +31,7 @@ CONFIG_EXPERIMENTAL=y
 CONFIG_BROKEN_ON_SMP=y
 CONFIG_LOCK_KERNEL=y
 CONFIG_INIT_ENV_ARG_LIMIT=32
-CONFIG_LOCALVERSION="$(KERNEL_LOCAL_VERSION)-Turbo_v3.0"
+CONFIG_LOCALVERSION="$(KERNEL_LOCAL_VERSION)-Turbo_v3.1.1"
 # CONFIG_LOCALVERSION_AUTO is not set
 CONFIG_SWAP=y
 CONFIG_SYSVIPC=y
@@ -462,7 +462,8 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0x0
 CONFIG_ZBOOT_ROM_BSS=0x0
-CONFIG_CMDLINE="console=ttyMSM2,115200n8 androidboot.hardware=semc mtdparts=msm_nand:317440k@94720k(system),628224k@412160k(userdata),8192k@1040384k(cache),29184k@2048k(amss),13312k@31232k(amss_fs),13824k@44544k(adsp),11776k@58368k(fota0),11776k@70144k(fota1),12800k@81920k(boot)"
+CONFIG_CMDLINE="console=ttyMSM2,115200n8 androidboot.hardware=semc mtdparts=msm_nand:409600k@94720k(system),536064k@504320k(userdata),8192k@1040384k(cache),29184k@2048k(amss),13312k@31232k(amss_fs),13824k@44544k(adsp),11776k@58368k(fota0),11776k@70144k(fota1),12800k@81920k(boot)"
+# [Turbo Origins] CONFIG_CMDLINE="console=ttyMSM2,115200n8 androidboot.hardware=semc mtdparts=msm_nand:317440k@94720k(system),628224k@412160k(userdata),8192k@1040384k(cache),29184k@2048k(amss),13312k@31232k(amss_fs),13824k@44544k(adsp),11776k@58368k(fota0),11776k@70144k(fota1),12800k@81920k(boot)"
 # [Stock] CONFIG_CMDLINE="console=ttyMSM2,115200n8 androidboot.hardware=semc mtdparts=msm_nand:320000k@94720k(system),389120k@414720k(userdata),103936k@940544k(cache),136704k@803840k(appslog),29184k@2048k(amss),13312k@31232k(amss_fs),13824k@44544k(adsp),11776k@58368k(fota0),11776k@70144k(fota1),12800k@81920k(boot)"
 # CONFIG_XIP_KERNEL is not set
 # CONFIG_KEXEC is not set
