@@ -1,0 +1,7 @@
+turbov='v3.1.1'
+sed -i 's/<text>Kernel .*<\/text>/<text>Kernel '$turbov'<\/text>/g' ./ramdisk-twrp/res/ui.xml
+sed -i 's/CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=\"$(KERNEL_LOCAL_VERSION)-Turbo_'$turbov'\"/g' ./arch/arm/configs/turbo_zeus_defconfig
+./01_makeconfig zeus
+./03_makekernel
+./04_makebootimg_bcm4329
+mv -f ./boot.img ./boot_zeus_turbo-$turbov.img
