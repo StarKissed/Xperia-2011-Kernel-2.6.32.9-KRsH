@@ -1,3 +1,3 @@
-ARCH=arm CROSS_COMPILE=/home/cerberus/toolchains/arm-eabi-linaro-4.7.3/bin/arm-eabi- make menuconfig
-#ARCH=arm CROSS_COMPILE=/home/cosmicdan/android/android_prebuilt_toolchains/arm-eabi-linaro-4.7/bin/arm-eabi- make menuconfig
-#ARCH=arm CROSS_COMPILE=/home/cosmicdan/android/android_prebuilt_toolchains/arm-eabi-4.4.3/bin/arm-eabi- make menuconfig
+ARCH=arm CROSS_COMPILE=/Volumes/android/android-toolchain-eabi/bin/arm-eabi- make menuconfig
+#ARCH=arm CROSS_COMPILE=/Volumes/android/android-toolchain-eabi/bin/arm-eabi- make menuconfig
+#ARCH=arm CROSS_COMPILE=/Volumes/android/android-toolchain-eabi/bin/arm-eabi- make menuconfig

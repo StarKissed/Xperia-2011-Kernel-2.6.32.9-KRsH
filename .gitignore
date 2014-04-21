@@ -65,3 +65,10 @@ usr/.initramfs_data.cpio.d
 usr/gen_init_cpio
 usr/initramfs_data.cpio
 
+arch/arm/boot/zImage
+ramdisk-gb-stock/sbin/ueventd
+ramdisk-ics-stock/sbin/ueventd
+ramdisk-ics/sbin/ueventd
+ramdisk-jb/sbin/ueventd
+ramdisk/sbin/ramdisk-gb-stock.cpio
+ramdisk/sbin/ramdisk-ics-stock.cpio
