@@ -3,9 +3,13 @@ then
     echo "[!] Building in Cygwin..."
 	MKBOOTFS="mkbootfs.exe"
 	MKBOOTIMG="mkbootimg.exe"
+elif [ `cat /etc/issue | grep Ubuntu` ]
+then
+    MKBOOTFS="linux/mkbootfs"
+	MKBOOTIMG="linux/mkbootimg"
 else
-    MKBOOTFS="mkbootfs"
-	MKBOOTIMG="mkbootimg"
+    MKBOOTFS="darwin/mkbootfs"
+	MKBOOTIMG="darwin/mkbootimg"
 fi
 
 # link init every build (for cygwin/linux compatibility)
@@ -39,7 +43,8 @@ cp -f drivers/net/wireless/bcm4329/bcm4329.ko ramdisk/modules/
 ./$MKBOOTFS ./ramdisk-twrp > ramdisk/sbin/ramdisk-twrp.cpio
 ./$MKBOOTFS ./ramdisk-cwm > ramdisk/sbin/ramdisk-cwm.cpio
 ./$MKBOOTFS ./ramdisk | lzma -9e -C crc32 > ramdisk.cpio.lzma
-./$MKBOOTIMG --base 0x00200000 --pagesize 131072 --kernel ./arch/arm/boot/zImage --ramdisk ramdisk.cpio.lzma -o boot.img
+#./$MKBOOTIMG --base 0x00200000 --pagesize 131072 --kernel ./arch/arm/boot/zImage --ramdisk ramdisk.cpio.lzma -o boot.img
+./$MKBOOTIMG --base 0x00200000 --kernel ./arch/arm/boot/zImage --ramdisk ramdisk.cpio.lzma -o boot.img
 
 rm ramdisk.cpio.lzma
 rm ramdisk/init
